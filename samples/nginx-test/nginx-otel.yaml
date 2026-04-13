@@ -1,0 +1,425 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-test
+---
+##################################################################################################
+# Web server
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: nginx-test
+spec:
+  ports:
+    - port: 9080
+      targetPort: 9080
+      nodePort: 30000
+  selector:
+    app: nginx-web
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: nginx-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: nginx-web
+  template:
+    metadata:
+      labels:
+        app: nginx-web
+    spec:
+      containers:
+      - name: web
+        image: nginx:1.29.0-otel
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: web-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: web-files
+          mountPath: /etc/nginx/files
+      volumes:
+      - name: index-html
+        configMap:
+          name: index-html
+          items:
+          - key: index.html
+            path: index.html
+      - name: web-config
+        configMap:
+          name: web-config
+          items:
+          - key: nginx.conf
+            path: nginx.conf
+      - name: web-files
+        configMap:
+          name: web-files
+      nodeSelector:
+        benchmark-web: 'true'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-config
+  namespace: nginx-test
+data:
+  nginx.conf: |
+    load_module modules/ngx_otel_module.so;
+    worker_processes 1;
+    worker_rlimit_nofile 65535;
+    pid        /var/run/nginx.pid;
+    events {
+      worker_connections 10000;
+      use epoll;
+    }
+    http {
+      include       /etc/nginx/mime.types;
+      default_type  application/octet-stream;
+      log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+      log_format minimal '$remote_addr [$time_local] "$request" '
+                         '$status $body_bytes_sent';
+      access_log  /var/log/nginx/access.log minimal buffer=32k flush=5s;
+      error_log  /var/log/nginx/error.log warn;
+      sendfile        on;
+      tcp_nopush     on;
+      tcp_nodelay on;
+      keepalive_timeout  65;
+      server_tokens off;
+      open_file_cache max=200000 inactive=20s;
+      open_file_cache_valid 30s;
+      open_file_cache_min_uses 2;
+      #gzip  on;
+      include /etc/nginx/conf.d/*.conf;
+      otel_exporter {
+        endpoint controller:4317;
+        batch_count 202400;
+        batch_size 5024;
+      }
+      server {
+        root /etc/nginx;
+        listen 9080;
+        location /files/ {
+          access_log off;
+        }
+        location /test {
+          otel_trace $otel_parent_sampled;
+          otel_trace_context extract;
+          access_log off;
+          return 200 'hello world!\n';
+        }
+      }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-files
+  namespace: nginx-test
+data:
+  short.html: |
+    Hello World!
+  long.html: |
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sit amet lacus et lorem venenatis
+    aliquam vel ut magna. Fusce a egestas nibh. Phasellus et arcu ex. Fusce pellentesque ut eros a
+    gravida. Nullam aliquet dui vel arcu accumsan varius. Orci varius natoque penatibus et magnis
+    dis parturient montes, nascetur ridiculus mus. Nulla vitae varius nisl. Cras viverra at risus
+    fringilla bibendum. Quisque ornare sem id leo ultrices rutrum. Cras id ex non massa rhoncus
+    dapibus quis id leo. Sed sed dapibus mi. Fusce tempus justo ac venenatis venenatis. Quisque
+    gravida leo a sem convallis, rhoncus imperdiet mauris volutpat. Mauris dictum lorem eu lorem
+    maximus maximus. In sem nisi, luctus vitae nibh vitae, vehicula consectetur turpis. Proin vitae
+    fringilla diam, sed fringilla metus. Vestibulum ornare magna quis magna euismod, sed venenatis
+    metus faucibus. Integer posuere dignissim felis nec mollis. Vestibulum congue nisl eu sem
+    viverra, nec tempor mi luctus. Vestibulum ut purus sapien. Vestibulum semper elementum
+    pellentesque. Morbi iaculis, mauris vitae mollis tincidunt, libero dui sodales neque, lobortis
+    rutrum mi mauris nec neque. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
+    posuere cubilia curae; Vivamus aliquam suscipit justo a pretium. Cras eget dolor vulputate,
+    laoreet quam at, pretium felis. Mauris tempus interdum ante a bibendum. Aliquam pulvinar justo
+    eget lobortis elementum. Donec urna neque, iaculis sed egestas id, finibus vel justo. Mauris
+    cursus neque quis turpis egestas, ac dapibus lorem pharetra. Praesent mauris tellus, egestas ac
+    mauris nec, malesuada pulvinar purus. Vestibulum ante ipsum primis in faucibus orci luctus et
+    ultrices posuere cubilia curae; Aenean elementum, tellus non faucibus porttitor, quam libero
+    scelerisque sapien, vel feugiat nisl eros sed justo. Mauris ut massa egestas, convallis urna
+    eget, pharetra neque. Vestibulum lacinia mi ac ex mattis, eget malesuada turpis molestie.
+    Integer nibh orci, aliquet quis malesuada ut, vestibulum nec mi. Quisque sit amet neque
+    condimentum, accumsan purus vel, consectetur ante. Sed ut sagittis libero. Sed et fringilla
+    ipsum, quis congue magna. Vestibulum facilisis ultricies ligula. Class aptent taciti sociosqu
+    ad litora torquent per conubia nostra, per inceptos himenaeos. Nam maximus, purus eget
+    fringilla venenatis, dui odio condimentum dui, sed condimentum velit justo a massa. Donec nec
+    bibendum justo, ac luctus diam. Mauris finibus sapien ut justo suscipit fermentum. Nam pharetra
+    elit ut risus volutpat tincidunt. Aenean accumsan tellus id sem viverra lobortis. In tempus
+    finibus orci, sed euismod nunc laoreet in. Nulla gravida dui eu semper tincidunt. Duis et
+    tortor quis mi condimentum tristique. Donec a suscipit massa. Nam in aliquet ipsum. Sed
+    accumsan ante ac consectetur finibus. Nam quis lacus id urna pulvinar elementum. Ut suscipit
+    metus non sodales tristique. Morbi mollis rutrum ultricies. Quisque suscipit a eros quis
+    venenatis. Nullam tempor nunc nunc, ut vestibulum nisi bibendum nec. In commodo felis id sem
+    feugiat fermentum. Cras non orci eu massa vehicula laoreet. In vel pharetra enim.
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sit amet lacus et lorem venenatis
+    aliquam vel ut magna. Fusce a egestas nibh. Phasellus et arcu ex. Fusce pellentesque ut eros a
+    gravida. Nullam aliquet dui vel arcu accumsan varius.
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sit amet lacus et lorem venenatis
+    aliquam vel ut magna. Fusce a egestas nibh. Phasellus et arcu ex. Fusce pellentesque ut eros a
+    gravida. Nullam aliquet dui vel arcu accumsan varius. Orci varius natoque penatibus et magnis
+    dis parturient montes, nascetur ridiculus mus. Nulla vitae varius nisl. Cras viverra at risus
+    fringilla bibendum. Quisque ornare sem id leo ultrices rutrum. Cras id ex non massa rhoncus
+    dapibus quis id leo. Sed sed dapibus mi. Fusce tempus justo ac venenatis venenatis. Quisque
+    gravida leo a sem convallis, rhoncus imperdiet mauris volutpat. Mauris dictum lorem eu lorem
+    maximus maximus. In sem nisi, luctus vitae nibh vitae, vehicula consectetur turpis. Proin vitae
+    fringilla diam, sed fringilla metus. Vestibulum ornare magna quis magna euismod, sed venenatis
+    metus faucibus. Integer posuere dignissim felis nec mollis. Vestibulum congue nisl eu sem
+    viverra, nec tempor mi luctus. Vestibulum ut purus sapien. Vestibulum semper elementum
+    pellentesque. Morbi iaculis, mauris vitae mollis tincidunt, libero dui sodales neque, lobortis
+    rutrum mi mauris nec neque. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
+    posuere cubilia curae; Vivamus aliquam suscipit justo a pretium. Cras eget dolor vulputate,
+    laoreet quam at, pretium felis. Mauris tempus interdum ante a bibendum. Aliquam pulvinar justo
+    eget lobortis elementum. Donec urna neque, iaculis sed egestas id, finibus vel justo. Mauris
+    cursus neque quis turpis egestas, ac dapibus lorem pharetra. Praesent mauris tellus, egestas ac
+    mauris nec, malesuada pulvinar purus. Vestibulum ante ipsum primis in faucibus orci luctus et
+    ultrices posuere cubilia curae; Aenean elementum, tellus non faucibus porttitor, quam libero
+    scelerisque sapien, vel feugiat nisl eros sed justo. Mauris ut massa egestas, convallis urna
+    eget, pharetra neque. Vestibulum lacinia mi ac ex mattis, eget malesuada turpis molestie.
+    Integer nibh orci, aliquet quis malesuada ut, vestibulum nec mi. Quisque sit amet neque
+    condimentum, accumsan purus vel, consectetur ante. Sed ut sagittis libero. Sed et fringilla
+    ipsum, quis congue magna. Vestibulum facilisis ultricies ligula. Class aptent taciti sociosqu
+    ad litora torquent per conubia nostra, per inceptos himenaeos. Nam maximus, purus eget
+    fringilla venenatis, dui odio condimentum dui, sed condimentum velit justo a massa. Donec nec
+    bibendum justo, ac luctus diam. Mauris finibus sapien ut justo suscipit fermentum. Nam pharetra
+    elit ut risus volutpat tincidunt. Aenean accumsan tellus id sem viverra lobortis. In tempus
+    finibus orci, sed euismod nunc laoreet in. Nulla gravida dui eu semper tincidunt. Duis et
+    tortor quis mi condimentum tristique. Donec a suscipit massa. Nam in aliquet ipsum. Sed
+    accumsan ante ac consectetur finibus. Nam quis lacus id urna pulvinar elementum. Ut suscipit
+    metus non sodales tristique. Morbi mollis rutrum ultricies. Quisque suscipit a eros quis
+    venenatis. Nullam tempor nunc nunc, ut vestibulum nisi bibendum nec. In commodo felis id sem
+    feugiat fermentum. Cras non orci eu massa vehicula laoreet. In vel pharetra enim.
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sit amet lacus et lorem venenatis
+    aliquam vel ut magna. Fusce a egestas nibh. Phasellus et arcu ex. Fusce pellentesque ut eros a
+    gravida. Nullam aliquet dui vel arcu accumsan varius.
+---
+##################################################################################################
+# Proxy
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: nginx-test
+spec:
+  ports:
+  - port: 9080
+    targetPort: 8080
+    nodePort: 30001
+  selector:
+    app: nginx
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: nginx-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+        app-type: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.29.0-otel
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-config
+          items:
+          - key: nginx.conf
+            path: nginx.conf
+      nodeSelector:
+        benchmark-proxy: 'true'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: nginx-test
+data:
+  nginx.conf: |
+    load_module modules/ngx_otel_module.so;
+    user www-data;
+    worker_processes 2;
+    worker_rlimit_nofile 65535;
+    pid /run/nginx.pid;
+    #include /etc/nginx/modules-enabled/*.conf;
+
+    events {
+      worker_connections 4096;
+      multi_accept on;
+      use epoll;
+    }
+
+
+    http {
+
+      ##
+      # Basic Settings
+      ##
+      
+      #limit_conn_zone $server_name zone=perserver:32m;
+      #limit_conn_zone $binary_remote_addr zone=per_addr:32m;
+      #limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;
+      
+      sendfile on;
+      tcp_nopush on;
+      tcp_nodelay on;
+      types_hash_max_size 2048;
+      keepalive_timeout 15;
+      server_tokens off;
+
+      # server_names_hash_bucket_size 64;
+      # server_name_in_redirect off;
+
+      include /etc/nginx/mime.types;
+      default_type application/octet-stream;
+    
+      log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+      log_format minimal '$remote_addr [$time_local] "$request" '
+                         '$status $body_bytes_sent';
+
+      access_log /var/log/nginx/access.log minimal buffer=32k flush=5s;
+      error_log /var/log/nginx/error.log warn;
+
+      include /etc/nginx/conf.d/*.conf;
+      #include /etc/nginx/sites-enabled/*;
+
+      upstream webservers {
+        server web:9080;
+        keepalive 32;
+      }
+      otel_exporter {
+        endpoint controller:4317;
+        batch_count 202400;
+        batch_size 5024;
+      }
+      split_clients "$otel_trace_id" $ratio_sampler {
+          OTELSAMPLINGRATE%     on;
+          *       off;
+      }
+      server {
+        listen 8080;
+        location / {
+          otel_trace $ratio_sampler;
+          otel_trace_context inject;
+          #limit_conn per_addr 1;
+          #limit_req zone=one burst=5 nodelay;
+          access_log off;
+          proxy_pass http://webservers;
+          proxy_buffering off;
+          proxy_buffer_size 4k;
+          proxy_buffers 8 4k;
+          proxy_busy_buffers_size 8k;
+          proxy_http_version 1.1;
+          proxy_set_header Connection "";
+          #proxy_connect_timeout 60s;
+          #proxy_send_timeout 60s;
+          #proxy_read_timeout 300s;
+        }
+      }
+    }
+---
+##################################################################################################
+# OpenTelemetry Collector
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: controller
+  namespace: nginx-test
+spec:
+  selector:
+    app: chain-scope-controller
+  ports:
+    - name: ui
+      port: 16686
+      targetPort: 16686
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
+    - name: grpc
+      port: 14250
+      targetPort: 14250
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: chain-scope-controller
+  namespace: nginx-test
+  labels:
+    name: chain-scope-controller
+    app: chain-scope-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: chain-scope-controller
+      app: chain-scope-controller
+  template:
+    metadata:
+      labels:
+        name: chain-scope-controller
+        app: chain-scope-controller
+    spec:
+      containers:
+        - name: chain-scope-controller
+          image: chainscope1234/controller:dev
+          imagePullPolicy: Always
+          resources:
+            requests:
+              ephemeral-storage: "2Gi"
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: DEBUG
+              value: "False"
+            - name: IDLE
+              value: "True"
+            - name: CHAIN_INTERVAL
+              value: "5"
+            - name: COLLECT_INTERVAL
+              value: "5"
+            - name: ALGORITHM
+              value: "tag-based"
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: benchmark
+                    operator: In
+                    values:
+                      - controller

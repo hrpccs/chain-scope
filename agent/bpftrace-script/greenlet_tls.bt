@@ -1,0 +1,12 @@
+uprobe:/proc/PID/root/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2:__tls_get_addr
+{
+    @tid_info[tid] = arg0;
+}
+
+
+uretprobe:/proc/PID/root/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2:__tls_get_addr
+{
+    delete(@tid_info, tid);
+   @tid_greenlet_tls[tid,arg0] = retval;
+}
+

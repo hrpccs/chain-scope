@@ -1,0 +1,417 @@
+BEGIN {
+    printf("store per go service info");
+    @pid_task_pointer[30628] =  0x8dd840; //search 
+    @pid_task_pointer[31194] =  0xa85b60; //geo
+    @pid_task_pointer[31132] =  0xa8c300; //rate
+    @pid_dataframe_pointer[30628] = 0xba6e60;
+    @pid_dataframe_pointer[31194] = 0xe23e20;
+    @pid_dataframe_pointer[31132] = 0xe27e40;
+}
+
+// 309960 search, grpc server and two client
+//google.golang.org/grpc/internal/transport.(*http2Server).operateHeaders
+uprobe:/proc/30628/exe:"google.golang.org/grpc/internal/transport.(*http2Server).operateHeaders" ,
+uprobe:/proc/31194/exe:"google.golang.org/grpc/internal/transport.(*http2Server).operateHeaders" ,
+uprobe:/proc/31132/exe:"google.golang.org/grpc/internal/transport.(*http2Server).operateHeaders" {
+    // rbx is the metaframe pointer
+    $goroutine = reg("r14");
+    $goid_offset = (uint64)152;
+    $goid = *(uint64*)($goroutine + $goid_offset);
+
+
+    //$headerframe = *(uint64*)(rbx)
+    $metaframe = (uint64)reg("bx");
+    $headerframe = *(uint64*)($metaframe);
+    $streamid = *(uint32*)($headerframe + 0x8);
+
+    printf("comm %s server side: operateHeaders: goid %u streamid %u\n",comm,$goid,$streamid);
+}
+
+// need to automate this by using llvm?
+
+// runtime.selectnbsend returns
+// runtime.selectnbsend + 0x20
+// /proc/309960/exe 40a100 ret 40a120 
+// rax 是 channel 指针
+// rbx是elem* 其实是二级指针，指向存放东西的地址
+uprobe:/proc/30628/exe:"runtime.selectnbsend",
+uprobe:/proc/31194/exe:"runtime.selectnbsend",
+uprobe:/proc/31132/exe:"runtime.selectnbsend"{
+    $elem_value = *(uint64*)(reg("bx"));
+    $inner = *(uint64*)($elem_value);     
+
+    if($inner == @pid_task_pointer[pid]){
+        $task = curtask;
+        $fsbase = $task->thread.fsbase;
+        $goroutine = *uptr((uint64*)($fsbase + 0xfffffffffffffff8));
+        $goid_offset = (uint64)152;
+        $goid = *(uint64*)($goroutine + $goid_offset);
+        printf("comm %s server side: selectnbsend: goid %u elem_value %x inner %x\n",comm,$goid,$elem_value,$inner);
+        @item_map[$elem_value] = $goid;
+        @tid_item_map[(pid,$goid)] = $elem_value;
+    }
+
+}
+
+
+uprobe:/proc/30628/exe:"runtime.selectnbsend" + 0x20 ,
+uprobe:/proc/31194/exe:"runtime.selectnbsend" + 0x20 ,
+uprobe:/proc/31132/exe:"runtime.selectnbsend" + 0x20 {
+    $success = reg("ax");
+    if($success == 0){ 
+        $task = curtask;
+        $fsbase = $task->thread.fsbase;
+        $goroutine = *uptr((uint64*)($fsbase + 0xfffffffffffffff8));
+        $goid_offset = (uint64)152;
+        $goid = *(uint64*)($goroutine + $goid_offset);
+        if(has_key(@item_map, @tid_item_map[(pid,$goid)])){
+            delete(@item_map[@tid_item_map[(pid,$goid)]]);
+            delete(@tid_item_map[(pid,$goid)]);
+        }
+    }
+}
+
+// focus <google.golang.org/grpc.(*Server).serverWorker>:
+// runtime.chanrecv2 returns // grpc server side need this
+// runtime.chanrecv2 + 0x19   0000000000409800 ret 0000000000409819
+uprobe:/proc/30628/exe:"runtime.chanrecv2" + 0x19 ,
+uprobe:/proc/31194/exe:"runtime.chanrecv2" + 0x19 ,
+uprobe:/proc/31132/exe:"runtime.chanrecv2" + 0x19 {
+    $elem_value = *uptr((uint64*)(reg("sp") + 0x8 + 0x18));
+    $inner = *(uint64*)($elem_value);
+
+    if(has_key(@item_map, $elem_value)){
+        $task = curtask;
+        $fsbase = $task->thread.fsbase;
+        $goroutine = *uptr((uint64*)($fsbase + 0xfffffffffffffff8));
+        $goid_offset = (uint64)152;
+        $goid = *(uint64*)($goroutine + $goid_offset);
+        printf("comm %s server side: chanrecv2: goid %u elem_value %x inner %x parent_goid %u\n", comm,$goid, $elem_value, $inner, @item_map[$elem_value]);
+        delete(@item_map, $elem_value);
+    }
+
+}
+
+// runtime.newproc1 returns 
+// runtime.newproc1 + 0x351
+//   0000000000444ca0 ret 444ff1
+uprobe:/proc/30628/exe:"runtime.newproc1" + 0x351 ,
+uprobe:/proc/31194/exe:"runtime.newproc1" + 0x351 ,
+uprobe:/proc/31132/exe:"runtime.newproc1" + 0x351 {
+    // rax is the goroutine pointer
+    // read the goid and parent goid.
+    $goroutine = reg("ax");
+    $goid_offset = (uint64)152;
+    $goid = *(uint64*)($goroutine + $goid_offset);
+    $parent_goid_offset = (uint64)272;
+    $parent_goid = *(uint64*)($goroutine + $parent_goid_offset);
+
+    printf("comm %s newproc1: goid %u spawns  goid %u\n",comm,$parent_goid,$goid);
+}
+
+//google.golang.org/grpc/internal/transport.(*controlBuffer).executeAndPut
+uprobe:/proc/30628/exe:"google.golang.org/grpc/internal/transport.(*controlBuffer).executeAndPut" ,
+uprobe:/proc/31194/exe:"google.golang.org/grpc/internal/transport.(*controlBuffer).executeAndPut" ,
+uprobe:/proc/31132/exe:"google.golang.org/grpc/internal/transport.(*controlBuffer).executeAndPut" {
+    // rdi is the item pointer
+    // rcx is the type pointer,dataframe is ba6e60, 通过搜索go:itab.*google.golang.org/grpc/internal/transport.dataFrame 符号得到
+    $dataframe = (uint64)reg("di");
+    $streamid = *(uint32*)($dataframe);
+    $frametype = (uint64)reg("cx");
+
+    if ($frametype == @pid_dataframe_pointer[pid]){
+        $task = curtask;
+        $fsbase = $task->thread.fsbase;
+        $goroutine = *uptr((uint64*)($fsbase + 0xfffffffffffffff8));
+        $goid_offset = (uint64)152;
+        $goid = *(uint64*)($goroutine + $goid_offset);
+        printf("comm %s server side: executeAndPut: goid %u streamid %u dataframe %u frametype %x\n",comm,$goid,$streamid,$dataframe,$frametype);
+        @dataframe_map[$dataframe] = $goid;
+    }
+
+}
+//rsp - 0x8 - 0x28 + 0x40
+    //printf("comm %s newproc1 exit: r14 %lx *(rsp+10) = %lx\n",comm,reg("r14"),*(uint64*)($rsp+0x10));
+
+//google.golang.org/grpc/internal/transport.(*loopyWriter).handle
+uprobe:/proc/30628/exe:"google.golang.org/grpc/internal/transport.(*loopyWriter).handle" ,
+uprobe:/proc/31194/exe:"google.golang.org/grpc/internal/transport.(*loopyWriter).handle" ,
+uprobe:/proc/31132/exe:"google.golang.org/grpc/internal/transport.(*loopyWriter).handle" {
+    //rbx is the type pointer
+    // rcx is the item pointer
+    $dataframe = (uint64)reg("cx");
+    $streamid = *(uint32*)($dataframe);
+    $frametype = (uint64)reg("bx");
+
+    if (has_key(@dataframe_map, $dataframe)){
+        $task = curtask;
+        $fsbase = $task->thread.fsbase;
+        $goroutine = *uptr((uint64*)($fsbase + 0xfffffffffffffff8));
+        $goid_offset = (uint64)152;
+        $goid = *(uint64*)($goroutine + $goid_offset);
+        printf("comm %s server side: loopyWriter handle: goid %u streamid %u dataframe %u frametype %x parent_goid %u\n", comm,$goid, $streamid, $dataframe, $frametype, @dataframe_map[$dataframe]);
+
+        //@send_streamid_map[$goid]
+
+        if (has_key(@send_streamid_map, (pid,$goid))){
+            $prev_streamid = @send_streamid_map[(pid,$goid)];
+            @send_streamid_map[(pid,$goid)] = $streamid;
+            @num_of_stream_to_send[(pid,$goid)]++;
+            if($streamid > @max_of_streamid_to_send[(pid,$goid)]){
+                @max_of_streamid_to_send[(pid,$goid)] = $streamid;
+            }
+            if($streamid < @min_of_streamid_to_send[(pid,$goid)]){
+                @min_of_streamid_to_send[(pid,$goid)] = $streamid;
+            }
+            printf("pid %u goid %u got multiple streamid %u prev_streamid %u\n", pid,$goid, $streamid, $prev_streamid);
+        }else{
+            @send_streamid_map[(pid,$goid)] = $streamid;
+            @num_of_stream_to_send[(pid,$goid)] = 1;
+            @max_of_streamid_to_send[(pid,$goid)] = $streamid;
+            @min_of_streamid_to_send[(pid,$goid)] = $streamid;
+            printf("pid %u goid %u got first streamid %u\n", pid,$goid, $streamid);
+        }
+        delete(@dataframe_map[$dataframe]);
+    }
+}
+
+
+
+
+//which sk_buff will the first bytes goto? wrtie queue tail or the first newly allocated sk_buff whose seq is the same as the write_seq; 
+fentry:vmlinux:tcp_sendmsg_locked {
+     $task = curtask;
+     $fsbase = $task->thread.fsbase;
+     $goroutine = *uptr((uint64*)($fsbase + 0xfffffffffffffff8));
+     $goid_offset = (uint64)152;
+     $goid = *uptr((uint64*)($goroutine + $goid_offset));
+     $tp = (struct tcp_sock*)args->sk;
+     $write_seq = $tp->write_seq;
+    $first_send_seq = $write_seq;
+
+    
+    if (has_key(@send_streamid_map, (pid,$goid))) { // attach the traceinfo to the latest skb, then the recieve side can get the traceinfo before processing the actual data.
+        // sendmsg level stats
+        @max_count = max(@num_of_stream_to_send[(pid,$goid)]);
+        @lhist_count = lhist(@num_of_stream_to_send[(pid,$goid)],0,30,1);
+        @max_streamid_dist = max(@max_of_streamid_to_send[(pid,$goid)] - @min_of_streamid_to_send[(pid,$goid)]);
+        @hist_streamid_dist = hist(@max_of_streamid_to_send[(pid,$goid)] - @min_of_streamid_to_send[(pid,$goid)]);
+
+        // propogate the traceinfo to the skb
+            $skb_seq = (uint32)0;
+            $write_queue_len = args->sk->sk_write_queue.qlen;
+            $write_queue_tail_skb = (struct sk_buff*)args->sk->sk_write_queue.prev;
+            printf("tcp_sendmsg: write_queue_len %u\n",$write_queue_len);
+            if ($write_queue_len > 0) { 
+                $skb = (struct sk_buff*)$write_queue_tail_skb;
+                $skb_cb = (struct tcp_skb_cb*)($skb->cb);
+                $skb_seq = $skb_cb->seq;
+            }else{
+                $skb_seq = $write_seq;
+            }
+            // 我们已经得到了目标skb的seq了，看这个seq是不是必定会被发送出去,以及正确的被ack；
+            printf("comm %s tcp_sendmsg: pid %u goid %u sends %u streams to sk %x skb_seq %u\n",comm,pid,$goid,@send_streamid_map[(pid,$goid)],args->sk,$skb_seq);
+            @seq_with_traceinfo[$skb_seq] = @send_streamid_map[(pid,$goid)];
+
+        delete(@send_streamid_map, (pid,$goid));
+        delete(@num_of_stream_to_send, (pid,$goid));
+    }
+}
+
+//static int tcp_transmit_skb(struct sock *sk, struct sk_buff *skb, int clone_it,
+			    //gfp_t gfp_mask)
+fentry:vmlinux:__tcp_transmit_skb {
+    $skb = (struct sk_buff*)args->skb;
+    $skb_cb = (struct tcp_skb_cb*)($skb->cb);
+    $skb_seq = $skb_cb->seq;
+    $len = $skb->len;
+
+    if (has_key(@seq_with_traceinfo, $skb_seq)){ 
+        printf("tcp_transmit_skb: skb_seq %u val %u\n", $skb_seq, @seq_with_traceinfo[$skb_seq]);
+    } // need to make sure the skb is data skb, which means skb->data_len > 0
+}
+
+// tx path merge
+//void tcp_skb_collapse_tstamp(struct sk_buff *skb,
+	     //const struct sk_buff *next_skb)
+//int skb_shift(struct sk_buff *tgt, struct sk_buff *skb, int shiftlen)
+fentry:vmlinux:skb_shift {
+     $from_skb = (struct sk_buff*)args->skb;
+     $from_skb_cb = (struct tcp_skb_cb*)($from_skb->cb);
+     $from_skb_seq = $from_skb_cb->seq;
+     $to_skb = (struct sk_buff*)args->tgt;
+     $to_skb_cb = (struct tcp_skb_cb*)($to_skb->cb);
+     $to_skb_seq = $to_skb_cb->seq;
+
+     // merge the traceinfo of two skbs if possible
+     printf("skb_shift: from_skb_seq %u, to_skb_seq %u\n", $from_skb_seq, $to_skb_seq);
+     if(has_key(@seq_with_traceinfo, $from_skb_seq)){
+         if(has_key(@seq_with_traceinfo,$to_skb_seq)){
+             printf("skb_shift: from skb_seq %u val %u to skb_seq %u val %u shift result seq %u val %u\n", $from_skb_seq, @seq_with_traceinfo[$from_skb_seq], $to_skb_seq, @seq_with_traceinfo[$to_skb_seq], $to_skb_seq, @seq_with_traceinfo[$from_skb_seq] + @seq_with_traceinfo[$to_skb_seq]);
+             @seq_with_traceinfo[$to_skb_seq] = @seq_with_traceinfo[$from_skb_seq] + @seq_with_traceinfo[$to_skb_seq];
+         }else{
+            printf("skb_shift: from skb_seq %u val %u to skb without traceinfo seq %u\n", $from_skb_seq, @seq_with_traceinfo[$from_skb_seq], $to_skb_seq);
+             @seq_with_traceinfo[$to_skb_seq] = @seq_with_traceinfo[$from_skb_seq];
+         }
+         delete(@seq_with_traceinfo[$from_skb_seq]);
+     }
+}
+
+fentry:vmlinux:tcp_ack_tstamp {
+  $skb = (struct sk_buff*)args->skb;
+  $skb_cb = (struct tcp_skb_cb*)$skb->cb;
+  $skb_seq = $skb_cb->seq;
+  $skb_end_seq = $skb_cb->end_seq;
+  $skb_ack_seq = $skb_cb->ack_seq;
+  $skb_len = $skb->len;
+  $ack_skb = (struct sk_buff*)args->ack_skb;
+
+
+  $ack_skb_cb = (struct tcp_skb_cb*)$ack_skb->cb;
+  $ack_skb_seq = $ack_skb_cb->seq;
+  $ack_skb_ack_seq = $ack_skb_cb->ack_seq;
+  $ack_skb_len = $ack_skb->len;
+
+    $snd_una = args->prior_snd_una;
+
+  if ($ack_skb_ack_seq >= $skb_end_seq) {
+    // fully acked skb, record the end_seq
+    @orig_seq_of_tcp_rtx_head_skb[args->sk] = $skb_end_seq;
+    if(has_key(@seq_with_traceinfo, $skb_seq)){
+        printf("tcp_ack_tstamp:delete seq_with_traceinfo %x skb_seq %d\n", args->sk,$skb_seq);
+        delete(@seq_with_traceinfo, $skb_seq);
+    }
+  }else{
+    // partially acked skb, get orig skb seq from map 
+    $orig_skb_seq  = @orig_seq_of_tcp_rtx_head_skb[args->sk];
+    if(has_key(@seq_with_traceinfo, $orig_skb_seq)){
+        printf("tcp_ack_tstamp:delete seq_with_traceinfo by sk %x orig_skb_seq %d\n", args->sk,$orig_skb_seq);
+        delete(@seq_with_traceinfo, $orig_skb_seq);
+    }
+  }
+
+
+  //printf("tcp_ack_tstamp:  prior_snd_una %u sk %x skb_seq %u,end_skb_seq %u ack_seq %u len %u, ack_skb seq %u, ack_skb ack_seq %u len %u\n",
+      //$snd_una,args->sk,$skb_seq,$skb_end_seq, $skb_ack_seq, $skb_len,$ack_skb_seq, $ack_skb_ack_seq,$ack_skb_len);
+}
+
+//void inet_csk_destroy_sock(struct sock *sk)
+fentry:vmlinux:inet_csk_destroy_sock {
+    delete(@orig_seq_of_tcp_rtx_head_skb, args->sk);
+}
+
+fexit:vmlinux:tcp_recvmsg {
+     $task = curtask;
+     $fsbase = $task->thread.fsbase;
+     $goroutine = *uptr((uint64*)($fsbase + 0xfffffffffffffff8));
+     $goid_offset = (uint64)152;
+     $goid = *uptr((uint64*)($goroutine + $goid_offset));
+            $tp = (struct tcp_sock*)args->sk;
+            $copied_seq__exit = $tp->copied_seq;
+            $skb_seq = $copied_seq__exit - retval;
+
+    if(retval > 0 && !(args->flags & 0x2)){
+            $sk_src_port = args->sk->__sk_common.skc_num;
+            if($sk_src_port == 8082 || $sk_src_port == 8083 || $sk_src_port == 8084){
+                printf("comm %s tcp_recvmsg: goid %d,sk %x port %u, skb_seq %u, copied_seq__exit %u, retval %u\n", comm,$goid,args->sk,$sk_src_port, $skb_seq, $copied_seq__exit, retval);
+                //delete(@recv_skb_seq, (args->sk,$skb_seq));
+            }
+    }
+}
+
+
+//int skb_copy_datagram_iter(const struct sk_buff *skb, int offset,
+			   //struct iov_iter *to, int len)
+fentry:vmlinux:skb_copy_datagram_iter {
+     $task = curtask;
+     $fsbase = $task->thread.fsbase;
+     $goroutine = *uptr((uint64*)($fsbase + 0xfffffffffffffff8));
+     $goid_offset = (uint64)152;
+     $goid = *uptr((uint64*)($goroutine + $goid_offset));
+    $skb = (struct sk_buff*)args->skb;
+    $skb_cb = (struct tcp_skb_cb*)$skb->cb;
+    $skb_seq = $skb_cb->seq;
+    $sk = $skb->sk;
+    $begin_skb = $skb_seq + args->offset;
+    $sk_src_port = $sk->__sk_common.skc_num;
+    if($sk_src_port == 8082 || $sk_src_port == 8083 || $sk_src_port == 8084){
+        if(has_key(@recv_skb_seq,($sk,$begin_skb))){
+            delete(@recv_skb_seq,($sk,$begin_skb));
+        }
+        printf("comm: %s skb_copy_datagram, goid %d, skb_seq %u skb_seq + offset %u len %u\n", $task->comm, $goid, $skb_seq, $skb_seq + args->offset, args->len);
+    }
+}
+
+// recv path coalesce 
+// tcp_try_coalesce
+//bool skb_try_coalesce(struct sk_buff *to, struct sk_buff *from,
+		      //bool *fragstolen, int *delta_truesize)
+fexit:vmlinux:tcp_try_coalesce {
+    if(retval != 0){
+        $from_skb = (struct sk_buff*)args->from;
+        $from_skb_cb = (struct tcp_skb_cb*)($from_skb->cb);
+        $from_skb_seq = $from_skb_cb->seq;
+        $to_skb = (struct sk_buff*)args->to;
+        $to_skb_cb = (struct tcp_skb_cb*)($to_skb->cb);
+        $to_skb_seq = $to_skb_cb->seq;
+
+        if(has_key(@recv_skb_seq, (args->sk,$from_skb_seq))){
+            @recv_skb_seq[(args->sk,$to_skb_seq)] = $to_skb_seq;
+            delete(@recv_skb_seq[(args->sk,$from_skb_seq)]);
+            printf("tcp_try_coalesce: delete seq %d\n", $from_skb_seq);
+        }
+    }
+}
+
+//static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
+				  //const struct tcphdr *th, int syn_inerr)            
+fexit:vmlinux:tcp_validate_incoming {
+    if(retval!=0){
+        $th = (struct tcphdr *)args->skb->data;
+
+        $tcp_seq_be = $th->seq;
+        $tcp_seq = bswap($tcp_seq_be);
+        $tcp_ack_be = $th->ack_seq;
+        $tcp_ack = bswap($tcp_ack_be);
+        $tcp_urg = $th->urg;
+        $tcp_seq = $tcp_seq + $tcp_urg;
+
+        if(has_key(@recv_skb_seq,(args->sk,$tcp_seq))){
+            delete(@recv_skb_seq,(args->sk,$tcp_seq));
+            printf("delete invalid seq %d\n",$tcp_seq);
+        }
+
+    }
+
+}
+
+fentry:vmlinux:tcp_rcv_established {
+     $task = curtask;
+     $fsbase = $task->thread.fsbase;
+     $goroutine = *uptr((uint64*)($fsbase + 0xfffffffffffffff8));
+     $goid_offset = (uint64)152;
+     $goid = *uptr((uint64*)($goroutine + $goid_offset));
+
+     $th = (struct tcphdr *)args->skb->data;
+
+    $tcp_seq_be = $th->seq;
+    $tcp_seq = bswap($tcp_seq_be);
+    $tcp_ack_be = $th->ack_seq;
+    $tcp_ack = bswap($tcp_ack_be);
+    $tcp_urg = $th->urg;
+    $tcp_seq = $tcp_seq + $tcp_urg;
+
+    $data_len = args->skb->data_len;
+
+    $tp = (struct tcp_sock*)args->sk;
+    $snd_una = $tp->snd_una;
+
+            $sk_src_port = args->sk->__sk_common.skc_num;
+            if($sk_src_port == 8082 || $sk_src_port == 8083 || $sk_src_port == 8084){
+                printf("tcp_rcv_established: sk %x src_port %u seq %u ack_seq %u urg %u data_len %u\n", args->sk,$sk_src_port, $tcp_seq, $tcp_ack, $tcp_urg,$data_len);
+               @recv_skb_seq[(args->sk,$tcp_seq)] = $tcp_seq; 
+            }
+
+
+
+}

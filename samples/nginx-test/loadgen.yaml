@@ -1,0 +1,34 @@
+###################################################################################################
+## Load generator
+###################################################################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadgenerator
+  namespace: nginx-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loadgenerator
+  template:
+    metadata:
+      labels:
+        app: loadgenerator
+    spec:
+      containers:
+      - name: alpine-bench
+        image: devth/alpine-bench
+        imagePullPolicy: IfNotPresent
+        command:
+          - /bin/sh
+          - -exc
+          - |
+            while true
+              do
+                #ab -r -q -d -c 16 -t 60s -n 9999999 nginx:9080/test
+                wget nginx:9080/test
+                sleep 3
+              done
+      nodeSelector:
+        benchmark: server

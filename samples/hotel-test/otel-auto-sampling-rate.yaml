@@ -1,0 +1,10 @@
+apiVersion: actions.odigos.io/v1alpha1
+kind: ProbabilisticSampler
+metadata:
+  name: example-probabilistic-sampler
+  namespace: odigos-system
+spec:
+  sampling_percentage: "OTELAUTOSAMPLINGRATE"
+  # sampling_percentage: "10"
+  signals:
+    - TRACES

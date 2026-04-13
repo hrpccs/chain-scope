@@ -1,0 +1,66 @@
+global:
+  limits:
+    max_millicpus: 10000
+    max_memory: 7680
+    max_log_backhaul_rate: 0
+  circuit_breakers:
+    relative_sys_load:
+      trigger_threshold: 0
+    # self_monitoring:
+    #   log:
+    #     log_level: DEBUG
+
+inputs:
+  proc:
+    process_matcher:
+    - match_regex: (frontend|geo|profile|reservation|search|user|rate|recommendation)
+    # - match_regex: "frontend"
+      match_type: process_name
+      ignore: false
+      enabled_features: [ebpf.socket.uprobe.golang,proc.gprocess_info]
+  # proc:
+  #   process_matcher:
+  #   - match_regex: []
+  #     match_type: process_name
+  #     enabled_features: [ebpf.socket.uprobe.golang]
+
+  cbpf: # do not collect tc traffic, this is for fair
+    af_packet:
+      interface_regex: some-nic-not-exist 
+  ebpf:
+    tunning: 
+      userspace_worker_threads: 8
+      perf_pages_count: 1024
+      kernel_ring_size: 131072
+      max_trace_entries: 131072
+      collector_queue_size: 131072
+
+    # disable unrelavant ebpf features
+    file:
+      io_event:
+        collect_mode: 0
+    profile:
+      on_cpu:
+        disabled: true
+    socket:
+      uprobe:
+        golang:
+          enabled: true
+        tls:
+          enabled: false
+
+
+processors:
+  request_log:
+    application_protocol_inference:
+      enabled_protocols:
+      - HTTP
+      - HTTP2
+      - Memcached
+      - MongoDB
+    tag_extraction:
+      http_endpoint:
+        extraction_disabled: true
+    # tunning: # avoid event droping, because we don't drop any in the benchmark, this is for fair
+    #   session_aggregate_max_entries: 10000000
+    #   session_aggregate_slot_capacity: 1000000 # max request in 5s slot

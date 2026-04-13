@@ -1,0 +1,200 @@
+##################################################################################################
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: beyla
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: beyla
+  name: beyla
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: beyla
+rules:
+  - apiGroups: [ "apps" ]
+    resources: [ "replicasets" ]
+    verbs: [ "list", "watch" ]
+  - apiGroups: [ "" ]
+    resources: [ "pods", "services", "nodes" ]
+    verbs: [ "list", "watch" ]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: beyla
+subjects:
+  - kind: ServiceAccount
+    name: beyla
+    namespace: beyla
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: beyla
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: beyla
+  name: beyla-config
+data:
+  beyla-config.yml: |
+    # this is required to enable kubernetes discovery and metadata
+    attributes:
+      kubernetes:
+        enable: true
+    # this will provide automatic routes report while minimizing cardinality
+    routes:
+      unmatched: heuristic
+    # let's instrument only the docs server
+    discovery:
+      services:
+        - k8s_namespace: hotel-test
+        # - k8s_deployment_name: "^((frontend|geo|profile|reservation|search|user|rate|recommendation))$"
+        # - k8s_deployment_name: "*"
+    otel_metrics_export:
+      instrumentations: []
+    otel_traces_export:
+      instrumentations: ["*"]
+      sampler:
+        name: "traceidratio"
+        arg: "1"
+    ebpf:
+      context_propagation: "headers"
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  namespace: beyla
+  name: beyla
+spec:
+  selector:
+    matchLabels:
+      instrumentation: beyla
+  template:
+    metadata:
+      labels:
+        instrumentation: beyla
+    spec:
+      serviceAccountName: beyla
+      hostPID: true           # <-- Important. Required in DaemonSet mode so Beyla can discover all monitored processes 
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: beyla
+          image: grafana/beyla:2.2.4
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+            runAsUser: 0
+            readOnlyRootFilesystem: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+                - BPF                 # <-- Important. Required for most eBPF probes to function correctly.
+                - SYS_PTRACE          # <-- Important. Allows Beyla to access the container namespaces and inspect executables.
+                - NET_RAW             # <-- Important. Allows Beyla to use socket filters for http requests.
+                - CHECKPOINT_RESTORE  # <-- Important. Allows Beyla to open ELF files.
+                - DAC_READ_SEARCH     # <-- Important. Allows Beyla to open ELF files.
+                - PERFMON             # <-- Important. Allows Beyla to load BPF programs.
+                - NET_ADMIN           # <-- Important. Allows Beyla to inject HTTP and TCP context propagation information.
+          volumeMounts:
+            - name: cgroup
+              mountPath: /sys/fs/cgroup # <-- Important. Allows Beyla to monitor all newly sockets to track outgoing requests. 
+            - mountPath: /config
+              name: beyla-config
+            - mountPath: /var/run/beyla
+              name: var-run-beyla
+          env:
+            - name: BEYLA_CONFIG_PATH
+              value: "/config/beyla-config.yml"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://jaeger:4318"
+            # - name: BEYLA_LOG_LEVEL
+            #   value: "debug"
+            # - name: BEYLA_BPF_DEBUG
+            #   value: "1"
+            # - name: BEYLA_PRINT_TRACES
+            #   value: "true"
+            # - name: BEYLA_TRACE_PRINTER
+            #   value: "text"
+            
+      volumes:
+        - name: cgroup
+          hostPath:
+            path: /sys/fs/cgroup
+        - name: beyla-config
+          configMap:
+            name: beyla-config
+        - name: var-run-beyla
+          emptyDir: {}
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: jaeger
+ namespace: beyla
+ labels:
+   app: jaeger
+   name: jaeger
+spec:
+ replicas: 1
+ selector:
+   matchLabels:
+     app: jaeger
+ template:
+   metadata:
+     labels:
+       app: jaeger
+       name: jaeger
+   spec:
+     containers:
+       - name: jaeger
+         image: jaegertracing/all-in-one:1.54.0
+         ports:
+           - containerPort: 16686 # UI
+           - containerPort: 4317  # OTLP gRPC
+           - containerPort: 4318  # OTLP gRPC
+           - containerPort: 14250 # gRPC
+         args:
+          #  - "--log-level=debug"
+           - "--memory.max-traces=500000"
+           - "--collector.otlp.enabled=true"
+           - "--collector.otlp.grpc.host-port=0.0.0.0:4317"
+           - "--collector.otlp.http.host-port=0.0.0.0:4318"
+     affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: benchmark
+                    operator: In
+                    values:
+                      - controller
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger
+  namespace: beyla
+spec:
+  selector:
+    app: jaeger
+  ports:
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+    - name: ui
+      port: 16686
+      targetPort: 16686
+    - name: grpc
+      port: 14250
+      targetPort: 14250
+  type: ClusterIP

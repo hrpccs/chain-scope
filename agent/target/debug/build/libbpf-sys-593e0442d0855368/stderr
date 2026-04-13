@@ -1,0 +1,994 @@
+usdt.c: In function ‘parse_elf_segs’:
+usdt.c:415:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  415 |         for (i = 0; i < n; i++) {
+      |                       ^
+usdt.c: In function ‘find_elf_seg’:
+usdt.c:549:35: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  549 |         for (i = 0, seg = segs; i < seg_cnt; i++, seg++) {
+      |                                   ^
+usdt.c: In function ‘find_vma_seg’:
+usdt.c:565:35: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  565 |         for (i = 0, seg = segs; i < seg_cnt; i++, seg++) {
+      |                                   ^
+In file included from gen_loader.c:15:
+skel_internal.h: In function ‘skel_free_map_data’:
+skel_internal.h:179:54: warning: unused parameter ‘addr’ [-Wunused-parameter]
+  179 | static inline void skel_free_map_data(void *p, __u64 addr, size_t sz)
+      |                                                ~~~~~~^~~~
+relo_core.c: In function ‘is_flex_arr’:
+relo_core.c:83:25: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+   83 |         return acc->idx == btf_vlen(t) - 1;
+      |                         ^~
+libbpf_errno.c: In function ‘libbpf_strerror’:
+libbpf_errno.c:65:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+   65 |                 if (ret >= size)
+      |                         ^~
+libbpf_errno.c:72:17: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+   72 |         if (ret >= size)
+      |                 ^~
+ringbuf.c: In function ‘ringbuf_process_ring’:
+ringbuf.c:272:33: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  272 |                         if (cnt >= n)
+      |                                 ^~
+usdt.c: In function ‘bpf_link_usdt_detach’:
+ringbuf.c: In function ‘ring_buffer__ring’:
+usdt.c:830:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  830 |         for (i = 0; i < usdt_link->uprobe_cnt; i++) {
+      |                       ^
+ringbuf.c:367:17: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+  367 |         if (idx >= rb->ring_cnt)
+      |                 ^~
+usdt.c: In function ‘specs_hash_fn’:
+usdt.c:890:45: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  890 | static size_t specs_hash_fn(long key, void *ctx)
+      |                                       ~~~~~~^~~
+usdt.c: In function ‘specs_equal_fn’:
+relo_core.c: In function ‘bpf_core_parse_spec’:
+usdt.c:895:56: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  895 | static bool specs_equal_fn(long key1, long key2, void *ctx)
+      |                                                  ~~~~~~^~~
+relo_core.c:374:49: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  374 |                         if (!flex && access_idx >= a->nelems)
+      |                                                 ^~
+bpf.c: In function ‘alloc_zero_tailing_info’:
+bpf.c:225:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  225 |         for (i = 0; i < cnt; i++) {
+      |                       ^
+usdt.c: In function ‘usdt_manager_attach_usdt’:
+netlink.c: In function ‘libbpf_netlink_recv’:
+netlink.c:159:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  159 |                 if (len > iov.iov_len) {
+      |                         ^
+usdt.c:1030:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1030 |         for (i = 0; i < target_cnt; i++) {
+      |                       ^
+netlink.c:180:43: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+  180 |                         if (nh->nlmsg_seq != seq) {
+      |                                           ^~
+netlink.c: In function ‘parse_genl_family_id’:
+netlink.c:249:74: warning: unused parameter ‘fn’ [-Wunused-parameter]
+  249 | static int parse_genl_family_id(struct nlmsghdr *nh, libbpf_dump_nlmsg_t fn,
+      |                                                      ~~~~~~~~~~~~~~~~~~~~^~
+btf_relocate.c: In function ‘btf_relocate_rewrite_strs’:
+btf_relocate.c:426:30: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+  426 |                 if (*str_off >= r->dist_str_len) {
+      |                              ^~
+usdt.c: In function ‘parse_usdt_note’:
+usdt.c:1133:33: warning: unused parameter ‘elf’ [-Wunused-parameter]
+ 1133 | static int parse_usdt_note(Elf *elf, const char *path, GElf_Nhdr *nhdr,
+      |                            ~~~~~^~~
+netlink.c: In function ‘parse_xdp_features’:
+netlink.c:421:21: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+  421 |         if (ifindex != md->ifindex)
+      |                     ^~
+usdt.c:1133:50: warning: unused parameter ‘path’ [-Wunused-parameter]
+ 1133 | static int parse_usdt_note(Elf *elf, const char *path, GElf_Nhdr *nhdr,
+      |                                      ~~~~~~~~~~~~^~~~
+netlink.c:405:72: warning: unused parameter ‘fn’ [-Wunused-parameter]
+  405 | static int parse_xdp_features(struct nlmsghdr *nh, libbpf_dump_nlmsg_t fn,
+      |                                                    ~~~~~~~~~~~~~~~~~~~~^~
+usdt.c: In function ‘calc_pt_regs_off’:
+nlattr.c: In function ‘validate_nla’:
+nlattr.c:65:33: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+   65 |         if (libbpf_nla_len(nla) < minlen)
+      |                                 ^
+usdt.c:1271:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 1271 |         for (i = 0; i < ARRAY_SIZE(reg_map); i++) {
+      |                       ^
+gen_loader.c: In function ‘bpf_gen__init’:
+gen_loader.c:144:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  144 |         for (i = 0; i < nr_progs_sz; i += 4) {
+      |                       ^
+usdt.c:1272:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 1272 |                 for (j = 0; j < ARRAY_SIZE(reg_map[i].names); j++) {
+      |                               ^
+netlink.c: In function ‘get_tc_info’:
+netlink.c:681:65: warning: unused parameter ‘fn’ [-Wunused-parameter]
+  681 | static int get_tc_info(struct nlmsghdr *nh, libbpf_dump_nlmsg_t fn,
+      |                                             ~~~~~~~~~~~~~~~~~~~~^~
+netlink.c: In function ‘tc_add_fd_and_name’:
+netlink.c:713:17: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+  713 |         if (len >= sizeof(name))
+      |                 ^~
+btf_dump.c: In function ‘pfx’:
+btf_dump.c:30:20: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+   30 |         return lvl >= PREFIX_CNT ? PREFIXES : &PREFIXES[PREFIX_CNT - lvl];
+      |                    ^~
+btf_dump.c: In function ‘str_hash_fn’:
+btf_dump.c:121:43: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  121 | static size_t str_hash_fn(long key, void *ctx)
+      |                                     ~~~~~~^~~
+btf_dump.c: In function ‘str_equal_fn’:
+btf_dump.c:126:48: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  126 | static bool str_equal_fn(long a, long b, void *ctx)
+      |                                          ~~~~~~^~~
+gen_loader.c: In function ‘bpf_gen__finish’:
+gen_loader.c:374:22: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  374 |         if (nr_progs < gen->nr_progs || nr_maps != gen->nr_maps) {
+      |                      ^
+gen_loader.c:374:49: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  374 |         if (nr_progs < gen->nr_progs || nr_maps != gen->nr_maps) {
+      |                                                 ^~
+gen_loader.c:381:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  381 |         for (i = 0; i < gen->nr_progs; i++)
+      |                       ^
+gen_loader.c:388:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  388 |         for (i = 0; i < gen->nr_maps; i++)
+      |                       ^
+btf_dump.c: In function ‘btf_is_struct_packed’:
+btf_dump.c:833:63: warning: unused parameter ‘id’ [-Wunused-parameter]
+  833 | static bool btf_is_struct_packed(const struct btf *btf, __u32 id,
+      |                                                         ~~~~~~^~
+btf_dump.c: In function ‘btf_dump_emit_bit_padding’:
+gen_loader.c: In function ‘bpf_gen__map_create’:
+btf_dump.c:894:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+  894 |         for (i = 0; i < ARRAY_SIZE(pads); i++) {
+      |                       ^
+btf_dump.c: In function ‘btf_dump_emit_missing_aliases’:
+relo_core.c: In function ‘bpf_core_patch_insn’:
+btf_dump.c:1046:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 1046 |         for (i = 0; i < ARRAY_SIZE(missing_base_types); i++) {
+      |                       ^
+relo_core.c:1052:48: warning: comparison of integer expressions of different signedness: ‘__s32’ {aka ‘int’} and ‘__u64’ {aka ‘long long unsigned int’} [-Wsign-compare]
+ 1052 |                 if (res->validate && insn->imm != orig_val) {
+      |                                                ^~
+relo_core.c:1068:48: warning: comparison of integer expressions of different signedness: ‘__s16’ {aka ‘short int’} and ‘__u64’ {aka ‘long long unsigned int’} [-Wsign-compare]
+ 1068 |                 if (res->validate && insn->off != orig_val) {
+      |                                                ^~
+btf_dump.c:1041:66: warning: unused parameter ‘t’ [-Wunused-parameter]
+ 1041 |                                           const struct btf_type *t)
+      |                                           ~~~~~~~~~~~~~~~~~~~~~~~^
+btf_dump.c: In function ‘btf_dump_emit_enum_fwd’:
+relo_core.c:1096:43: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 1096 |                         if (insn_bytes_sz != res->orig_sz) {
+      |                                           ^~
+btf_dump.c:1056:59: warning: unused parameter ‘t’ [-Wunused-parameter]
+ 1056 |                                    const struct btf_type *t)
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~^
+relo_core.c:1025:67: warning: unused parameter ‘relo’ [-Wunused-parameter]
+ 1025 |                         int insn_idx, const struct bpf_core_relo *relo,
+      |                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+gen_loader.c:545:28: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  545 |         } else if (map_idx != gen->nr_maps) {
+      |                            ^~
+elf.c: In function ‘elf_find_next_scn_by_type’:
+linker.c: In function ‘linker_load_obj_file’:
+elf.c:72:32: warning: comparison of integer expressions of different signedness: ‘Elf64_Word’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+   72 |                 if (sh.sh_type == sh_type)
+      |                                ^~
+linker.c:537:68: warning: unused parameter ‘opts’ [-Wunused-parameter]
+  537 |                                 const struct bpf_linker_file_opts *opts,
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+gen_loader.c: In function ‘bpf_gen__record_attach_target’:
+gen_loader.c:569:17: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+  569 |         if (ret >= sizeof(gen->attach_target))
+      |                 ^~
+gen_loader.c: In function ‘get_ksym_desc’:
+relo_core.c: In function ‘bpf_core_format_spec’:
+linker.c: In function ‘linker_sanity_check_elf_symtab’:
+linker.c:807:55: warning: comparison of integer expressions of different signedness: ‘Elf64_Word’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+  807 |         if (!sec->shdr->sh_link || sec->shdr->sh_link >= obj->sec_cnt) {
+      |                                                       ^~
+btf_dump.c: In function ‘btf_dump_name_dups’:
+gen_loader.c:622:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  622 |         for (i = 0; i < gen->nr_ksyms; i++) {
+      |                       ^
+elf.c: In function ‘elf_find_func_offset’:
+elf.c:314:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+  314 |         for (i = 0; i < ARRAY_SIZE(sh_types); i++) {
+      |                       ^
+elf.c:334:57: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  334 |                                 if (elf_sym_offset(sym) == ret) {
+      |                                                         ^~
+relo_core.c:1168:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1168 |                 if (r >= buf_sz)                                \
+      |                       ^~
+relo_core.c:1178:9: note: in expansion of macro ‘append_buf’
+ 1178 |         append_buf("<%s> [%u] %s %s",
+      |         ^~~~~~~~~~
+linker.c: In function ‘linker_sanity_check_elf_relos’:
+btf_dump.c:1634:51: warning: unused parameter ‘d’ [-Wunused-parameter]
+ 1634 | static size_t btf_dump_name_dups(struct btf_dump *d, struct hashmap *name_map,
+      |                                  ~~~~~~~~~~~~~~~~~^
+linker.c:889:55: warning: comparison of integer expressions of different signedness: ‘Elf64_Word’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+  889 |         if (!sec->shdr->sh_info || sec->shdr->sh_info >= obj->sec_cnt) {
+      |                                                       ^~
+elf.c: In function ‘elf_resolve_syms_offsets’:
+elf.c:439:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+  439 |         for (i = 0; i < ARRAY_SIZE(sh_types); i++) {
+      |                       ^
+btf_dump.c: In function ‘btf_dump_unsupported_data’:
+elf.c: In function ‘elf_resolve_pattern_offsets’:
+linker.c: In function ‘linker_sanity_check_btf’:
+elf.c:520:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+  520 |         for (i = 0; i < ARRAY_SIZE(sh_types); i++) {
+      |                       ^
+relo_core.c:1168:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1168 |                 if (r >= buf_sz)                                \
+      |                       ^~
+relo_core.c:1194:25: note: in expansion of macro ‘append_buf’
+ 1194 |                         append_buf(fmt_str, s, e->val);
+      |                         ^~~~~~~~~~
+linker.c:990:38: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+  990 |                         if (*type_id >= n)
+      |                                      ^~
+btf_dump.c:1742:44: warning: unused parameter ‘id’ [-Wunused-parameter]
+ 1742 |                                      __u32 id)
+      |                                      ~~~~~~^~
+btf_dump.c: In function ‘btf_dump_get_bitfield_value’:
+relo_core.c:1168:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1168 |                 if (r >= buf_sz)                                \
+      |                       ^~
+relo_core.c:1202:25: note: in expansion of macro ‘append_buf’
+ 1202 |                         append_buf(fmt_str, s, (unsigned long long)btf_enum64_value(e));
+      |                         ^~~~~~~~~~
+linker.c: In function ‘sec_content_is_same’:
+gen_loader.c: In function ‘cleanup_relos’:
+btf_dump.c:1748:57: warning: unused parameter ‘d’ [-Wunused-parameter]
+ 1748 | static int btf_dump_get_bitfield_value(struct btf_dump *d,
+      |                                        ~~~~~~~~~~~~~~~~~^
+linker.c:1119:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘Elf64_Xword’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1119 |         if (dst_sec->sec_sz != src_sec->shdr->sh_size)
+      |                             ^~
+gen_loader.c:940:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  940 |         for (i = 0; i < gen->nr_ksyms; i++) {
+      |                       ^
+gen_loader.c:935:52: warning: unused parameter ‘insns’ [-Wunused-parameter]
+  935 | static void cleanup_relos(struct bpf_gen *gen, int insns)
+      |                                                ~~~~^~~~~
+gen_loader.c: In function ‘info_blob_bswap’:
+gen_loader.c:976:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  976 |         for (i = 0; i < load_attr->func_info_cnt; i++)
+      |                       ^
+gen_loader.c:979:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  979 |         for (i = 0; i < load_attr->line_info_cnt; i++)
+      |                       ^
+gen_loader.c: In function ‘bpf_gen__prog_load’:
+gen_loader.c:1014:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1014 |                 for (i = 0; i < insn_cnt; i++, insn++)
+      |                               ^
+btf_dump.c: In function ‘btf_dump_int_data’:
+relo_core.c:1168:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1168 |                 if (r >= buf_sz)                                \
+      |                       ^~
+relo_core.c:1210:33: note: in expansion of macro ‘append_buf’
+ 1210 |                                 append_buf(".%s", spec->spec[i].name);
+      |                                 ^~~~~~~~~~
+btf_dump.c:1873:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 1873 |         if (sz == 0 || sz > sizeof(buf)) {
+      |                           ^
+In file included from /usr/include/stdio.h:34,
+                 from libbpf.h:14,
+                 from libbpf_internal.h:43,
+                 from btf_iter.c:13:
+btf_iter.c: In function ‘btf_field_iter_init’:
+btf_iter.c:44:82: warning: missing initializer for field ‘m_sz’ of ‘struct btf_field_desc’ [-Wmissing-field-initializers]
+   44 |                         it->desc = (struct btf_field_desc) { 1, {offsetof(struct btf_type, type)} };
+      |                                                                                  ^~~~~~~~
+libbpf_internal.h:552:13: note: ‘m_sz’ declared here
+  552 |         int m_sz;
+      |             ^~~~
+btf_iter.c:50:25: warning: missing initializer for field ‘m_sz’ of ‘struct btf_field_desc’ [-Wmissing-field-initializers]
+   50 |                         };
+      |                         ^
+libbpf_internal.h:552:13: note: ‘m_sz’ declared here
+  552 |         int m_sz;
+      |             ^~~~
+btf_iter.c:99:25: warning: missing initializer for field ‘m_sz’ of ‘struct btf_field_desc’ [-Wmissing-field-initializers]
+   99 |                         };
+      |                         ^
+libbpf_internal.h:552:13: note: ‘m_sz’ declared here
+  552 |         int m_sz;
+      |             ^~~~
+relo_core.c:1168:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1168 |                 if (r >= buf_sz)                                \
+      |                       ^~
+relo_core.c:1212:33: note: in expansion of macro ‘append_buf’
+ 1212 |                                 append_buf("[%u]", spec->spec[i].idx);
+      |                                 ^~~~~~~~~~
+relo_core.c:1168:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1168 |                 if (r >= buf_sz)                                \
+      |                       ^~
+relo_core.c:1215:17: note: in expansion of macro ‘append_buf’
+ 1215 |                 append_buf(" (");
+      |                 ^~~~~~~~~~
+relo_core.c:1168:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1168 |                 if (r >= buf_sz)                                \
+      |                       ^~
+relo_core.c:1217:25: note: in expansion of macro ‘append_buf’
+ 1217 |                         append_buf("%s%d", i == 0 ? "" : ":", spec->raw_spec[i]);
+      |                         ^~~~~~~~~~
+strset.c: In function ‘strset__new’:
+linker.c: In function ‘glob_map_defs_match’:
+strset.c:66:35: warning: comparison of integer expressions of different signedness: ‘long int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+   66 |                 for (off = 0; off < set->strs_data_len; off += strlen(set->strs_data + off) + 1) {
+      |                                   ^
+relo_core.c:1168:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1168 |                 if (r >= buf_sz)                                \
+      |                       ^~
+relo_core.c:1220:25: note: in expansion of macro ‘append_buf’
+ 1220 |                         append_buf(" @ offset %u.%u)", spec->bit_offset / 8, spec->bit_offset % 8);
+      |                         ^~~~~~~~~~
+linker.c:1651:65: warning: unused parameter ‘sym’ [-Wunused-parameter]
+ 1651 |                                 struct src_obj *obj, Elf64_Sym *sym, int btf_id)
+      |                                                      ~~~~~~~~~~~^~~
+linker.c: In function ‘glob_syms_match’:
+relo_core.c:1168:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1168 |                 if (r >= buf_sz)                                \
+      |                       ^~
+relo_core.c:1222:25: note: in expansion of macro ‘append_buf’
+ 1222 |                         append_buf(" @ offset %u)", spec->bit_offset / 8);
+      |                         ^~~~~~~~~~
+linker.c:1691:73: warning: unused parameter ‘sym_idx’ [-Wunused-parameter]
+ 1691 |                             struct src_obj *obj, Elf64_Sym *sym, size_t sym_idx, int btf_id)
+      |                                                                  ~~~~~~~^~~~~~~
+btf_dump.c:1866:35: warning: unused parameter ‘bits_offset’ [-Wunused-parameter]
+ 1866 |                              __u8 bits_offset)
+      |                              ~~~~~^~~~~~~~~~~
+btf_dump.c: In function ‘btf_dump_var_data’:
+linker.c: In function ‘find_glob_sym_btf’:
+btf_dump.c:1995:36: warning: unused parameter ‘id’ [-Wunused-parameter]
+ 1995 |                              __u32 id,
+      |                              ~~~~~~^~
+linker.c:1772:46: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 1772 |                         if (btf_id && btf_id != vi->type) {
+      |                                              ^~
+btf_dump.c: In function ‘btf_dump_struct_data’:
+linker.c:1727:62: warning: unused parameter ‘sym’ [-Wunused-parameter]
+ 1727 | static int find_glob_sym_btf(struct src_obj *obj, Elf64_Sym *sym, const char *sym_name,
+      |                                                   ~~~~~~~~~~~^~~
+btf_dump.c:2091:39: warning: unused parameter ‘id’ [-Wunused-parameter]
+ 2091 |                                 __u32 id,
+      |                                 ~~~~~~^~
+btf_dump.c: In function ‘btf_dump_ptr_data’:
+btf_dump.c:2136:54: warning: unused parameter ‘t’ [-Wunused-parameter]
+ 2136 |                               const struct btf_type *t,
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~^
+btf_dump.c: In function ‘btf_dump_enum_data’:
+btf_dump.c:2221:35: warning: comparison of integer expressions of different signedness: ‘__s64’ {aka ‘long long int’} and ‘__u64’ {aka ‘long long unsigned int’} [-Wsign-compare]
+ 2221 |                         if (value != btf_enum64_value(e))
+      |                                   ^~
+btf_dump.c: In function ‘btf_dump_datasec_data’:
+btf.c: In function ‘btf_type_by_id’:
+btf.c:628:21: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+  628 |         if (type_id < btf->start_id)
+      |                     ^
+btf_dump.c:2235:40: warning: unused parameter ‘id’ [-Wunused-parameter]
+ 2235 |                                  __u32 id,
+      |                                  ~~~~~~^~
+btf.c: In function ‘determine_ptr_size’:
+btf.c:675:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+  675 |                 for (j = 0; j < ARRAY_SIZE(long_aliases); j++) {
+      |                               ^
+btf.c: In function ‘btf_ptr_sz’:
+btf.c:688:51: warning: operand of ‘?:’ changes signedness from ‘int’ to ‘long unsigned int’ due to unsignedness of other operand [-Wsign-compare]
+  688 |         return btf->ptr_sz < 0 ? sizeof(void *) : btf->ptr_sz;
+      |                                                   ^~~~~~~~~~~
+linker.c: In function ‘linker_append_btf_ext’:
+btf_dump.c: In function ‘btf_dump_type_data_check_zero’:
+linker.c:2537:47: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 2537 |                 if (dst_sec->func_info.rec_sz != rec_sz) {
+      |                                               ^~
+btf_dump.c:2369:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 2369 |                 for (i = 0; i < array->nelems; i++) {
+      |                               ^
+In file included from linker.c:21:
+libbpf_internal.h:442:16: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  442 |              i < (sec)->num_info;                                       \
+      |                ^
+linker.c:2542:17: note: in expansion of macro ‘for_each_btf_ext_rec’
+ 2542 |                 for_each_btf_ext_rec(&obj->btf_ext->func_info, ext_sec, i, src_rec) {
+      |                 ^~~~~~~~~~~~~~~~~~~~
+linker.c:2566:47: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 2566 |                 if (dst_sec->line_info.rec_sz != rec_sz) {
+      |                                               ^~
+btf.c: In function ‘btf_parse_raw’:
+libbpf_internal.h:442:16: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  442 |              i < (sec)->num_info;                                       \
+      |                ^
+linker.c:2571:17: note: in expansion of macro ‘for_each_btf_ext_rec’
+ 2571 |                 for_each_btf_ext_rec(&obj->btf_ext->line_info, ext_sec, i, src_rec) {
+      |                 ^~~~~~~~~~~~~~~~~~~~
+btf.c:1324:35: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘long int’ [-Wsign-compare]
+ 1324 |         if (fread(data, 1, sz, f) < sz) {
+      |                                   ^
+At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+linker.c:2608:52: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 2608 |                 if (dst_sec->core_relo_info.rec_sz != rec_sz) {
+      |                                                    ^~
+btf.c: In function ‘btf_get_raw_data’:
+btf.c:1506:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 1506 |                 for (i = 0; i < btf->nr_types; i++) {
+      |                               ^
+libbpf_internal.h:442:16: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  442 |              i < (sec)->num_info;                                       \
+      |                ^
+linker.c:2613:17: note: in expansion of macro ‘for_each_btf_ext_rec’
+ 2613 |                 for_each_btf_ext_rec(&obj->btf_ext->core_relo_info, ext_sec, i, src_rec) {
+      |                 ^~~~~~~~~~~~~~~~~~~~
+At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+btf.c: In function ‘btf__str_by_offset’:
+btf.c:1553:20: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 1553 |         if (offset < btf->start_str_off)
+      |                    ^
+btf.c: In function ‘validate_type_id’:
+btf.c:2085:26: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 2085 |         if (id < 0 || id > BTF_MAX_NR_TYPES)
+      |                          ^
+At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+btf.c: In function ‘btf_dedup_clear_hypot_map’:
+btf.c:3584:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 3584 |         for (i = 0; i < d->hypot_cnt; i++)
+      |                       ^
+btf.c: In function ‘btf_dedup_identity_hash_fn’:
+btf.c:3607:58: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+ 3607 | static size_t btf_dedup_identity_hash_fn(long key, void *ctx)
+      |                                                    ~~~~~~^~~
+btf.c: In function ‘btf_dedup_collision_hash_fn’:
+btf.c:3612:48: warning: unused parameter ‘key’ [-Wunused-parameter]
+ 3612 | static size_t btf_dedup_collision_hash_fn(long key, void *ctx)
+      |                                           ~~~~~^~~
+btf.c:3612:59: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+ 3612 | static size_t btf_dedup_collision_hash_fn(long key, void *ctx)
+      |                                                     ~~~~~~^~~
+btf.c: In function ‘btf_dedup_equal_fn’:
+btf.c:3617:56: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+ 3617 | static bool btf_dedup_equal_fn(long k1, long k2, void *ctx)
+      |                                                  ~~~~~~^~~
+btf.c: In function ‘btf_for_each_str_off’:
+btf.c:3687:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 3687 |         for (i = 0; i < d->btf->nr_types; i++) {
+      |                       ^
+btf.c: In function ‘strs_dedup_remap_str_off’:
+btf.c:3721:37: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 3721 |         if (str_off == 0 || str_off < d->btf->start_str_off)
+      |                                     ^
+At top level:
+btf.c: In function ‘btf_hash_struct’:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+btf.c:3927:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 3927 |         for (i = 0; i < vlen; i++) {
+      |                       ^
+btf.c: In function ‘btf_dedup_prim_types’:
+btf.c:4246:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 4246 |         for (i = 0; i < d->btf->nr_types; i++) {
+      |                       ^
+At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+btf.c: In function ‘btf_dedup_is_equiv’:
+btf.c:4499:63: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 4499 |                         if (fwd_kind == real_kind && canon_id < d->btf->start_id)
+      |                                                               ^
+btf.c: In function ‘btf_dedup_merge_hypot_map’:
+At top level:
+btf.c:4626:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 4626 |         for (i = 0; i < d->hypot_cnt; i++) {
+      |                       ^
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+btf.c: In function ‘btf_dedup_struct_types’:
+btf.c:4766:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 4766 |         for (i = 0; i < d->btf->nr_types; i++) {
+      |                       ^
+At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+btf.c: In function ‘btf_dedup_ref_types’:
+btf.c:4928:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 4928 |         for (i = 0; i < d->btf->nr_types; i++) {
+      |                       ^
+btf.c: In function ‘btf_dedup_resolve_fwds’:
+btf.c:5056:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 5056 |         for (i = 0; i < d->btf->nr_types; i++) {
+      |                       ^
+btf.c: In function ‘btf_dedup_compact_types’:
+btf.c:5091:46: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 5091 |         for (i = 0, id = d->btf->start_id; i < d->btf->nr_types; i++, id++)
+      |                                              ^
+btf.c:5096:46: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 5096 |         for (i = 0, id = d->btf->start_id; i < d->btf->nr_types; i++, id++) {
+      |                                              ^
+btf.c:5097:32: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 5097 |                 if (d->map[id] != id)
+      |                                ^~
+btf.c: In function ‘btf_dedup_remap_types’:
+btf.c:5160:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 5160 |         for (i = 0; i < d->btf->nr_types; i++) {
+      |                       ^
+btf.c: In function ‘btf__load_vmlinux_btf’:
+btf.c:5230:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 5230 |         for (i = 0; i < ARRAY_SIZE(locations); i++) {
+      |                       ^
+In file included from btf.c:22:
+btf.c: In function ‘btf_ext_visit_type_ids’:
+libbpf_internal.h:442:16: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  442 |              i < (sec)->num_info;                                       \
+      |                ^
+btf.c:5269:17: note: in expansion of macro ‘for_each_btf_ext_rec’
+ 5269 |                 for_each_btf_ext_rec(seg, sec, i, rec) {
+      |                 ^~~~~~~~~~~~~~~~~~~~
+libbpf.c: In function ‘libbpf_set_strict_mode’:
+libbpf.c:339:52: warning: unused parameter ‘mode’ [-Wunused-parameter]
+  339 | int libbpf_set_strict_mode(enum libbpf_strict_mode mode)
+      |                            ~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+libbpf_internal.h:442:16: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  442 |              i < (sec)->num_info;                                       \
+      |                ^
+btf.c:5280:17: note: in expansion of macro ‘for_each_btf_ext_rec’
+ 5280 |                 for_each_btf_ext_rec(seg, sec, i, rec) {
+      |                 ^~~~~~~~~~~~~~~~~~~~
+btf.c: In function ‘btf_ext_visit_str_offs’:
+libbpf_internal.h:442:16: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  442 |              i < (sec)->num_info;                                       \
+      |                ^
+btf.c:5311:17: note: in expansion of macro ‘for_each_btf_ext_rec’
+ 5311 |                 for_each_btf_ext_rec(seg, sec, i, rec) {
+      |                 ^~~~~~~~~~~~~~~~~~~~
+libbpf.c: In function ‘bpf_object__add_programs’:
+libbpf.c:874:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  874 |         for (i = 0; i < nr_syms; i++) {
+      |                       ^
+libbpf.c: In function ‘bpf_object_bswap_progs’:
+libbpf.c:951:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  951 |         for (p = 0; p < obj->nr_programs; p++, prog++) {
+      |                       ^
+libbpf_internal.h:442:16: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  442 |              i < (sec)->num_info;                                       \
+      |                ^
+btf.c:5329:17: note: in expansion of macro ‘for_each_btf_ext_rec’
+ 5329 |                 for_each_btf_ext_rec(seg, sec, i, rec) {
+      |                 ^~~~~~~~~~~~~~~~~~~~
+libbpf.c:953:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  953 |                 for (i = 0; i < prog->insns_cnt; i++, insn++)
+      |                               ^
+libbpf.c: In function ‘find_struct_ops_kern_types’:
+libbpf.c:1044:44: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘__s32’ {aka ‘int’} [-Wsign-compare]
+ 1044 |                 if (kern_data_member->type == kern_type_id)
+      |                                            ^~
+btf.c: In function ‘btf_add_distilled_types’:
+libbpf.c: In function ‘is_valid_st_ops_program’:
+btf.c:5423:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 5423 |         for (i = 1; i < dist->split_start_id; i++) {
+      |                       ^
+libbpf.c:1072:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1072 |         for (i = 0; i < obj->nr_programs; i++) {
+      |                       ^
+libbpf.c: In function ‘bpf_object_adjust_struct_ops_autoload’:
+libbpf.c:1091:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1091 |         for (i = 0; i < obj->nr_programs; ++i) {
+      |                       ^
+libbpf.c:1099:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1099 |                 for (j = 0; j < obj->nr_maps; ++j) {
+      |                               ^
+At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+btf.c: In function ‘btf__distill_base’:
+btf.c:5582:39: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 5582 |         for (i = src_btf->start_id; i < n; i++) {
+      |                                       ^
+libbpf.c: In function ‘bpf_object_init_struct_ops’:
+libbpf.c:1457:35: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1457 |         for (sec_idx = 0; sec_idx < obj->efile.sec_cnt; ++sec_idx) {
+      |                                   ^
+btf.c:5606:39: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 5606 |         for (i = src_btf->start_id; i < n; i++) {
+      |                                       ^
+libbpf.c: In function ‘internal_map_name’:
+libbpf.c:1862:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 1862 |         if (sfx_len >= BPF_OBJ_NAME_LEN)
+      |                     ^~
+btf.c:5624:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 5624 |         for (i = 1; i < n; i++) {
+      |                       ^
+At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+libbpf.c: In function ‘bpf_object__init_global_data_maps’:
+libbpf.c:1986:35: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1986 |         for (sec_idx = 1; sec_idx < obj->efile.sec_cnt; sec_idx++) {
+      |                                   ^
+libbpf.c: In function ‘find_extern_by_name_with_len’:
+libbpf.c:2047:38: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+ 2047 |                 if (strlen(ext_name) == len && strncmp(ext_name, name, len) == 0)
+      |                                      ^~
+libbpf.c: In function ‘set_kcfg_value_str’:
+libbpf.c:2108:17: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+ 2108 |         if (len >= ext->kcfg.sz) {
+      |                 ^~
+At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+libbpf.c: In function ‘pathname_concat’:
+libbpf.c:2506:17: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 2506 |         if (len >= buf_sz)
+      |                 ^~
+libbpf.c: In function ‘init_arena_map_data’:
+libbpf.c:2953:58: warning: unused parameter ‘sec_idx’ [-Wunused-parameter]
+ 2953 |                                const char *sec_name, int sec_idx,
+      |                                                      ~~~~^~~~~~~
+libbpf.c: In function ‘bpf_object__init_user_btf_maps’:
+libbpf.c:3027:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 3027 |         for (i = 0; i < obj->nr_maps; i++) {
+      |                       ^
+libbpf.c: In function ‘bpf_object__sanitize_btf’:
+libbpf.c:3120:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 3120 |         for (i = 1; i < btf__type_cnt(btf); i++) {
+      |                       ^
+libbpf.c: In function ‘bpf_object__init_btf’:
+libbpf.c:3266:43: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 3266 |                 for (seg_num = 0; seg_num < ARRAY_SIZE(ext_segs); seg_num++) {
+      |                                           ^
+libbpf.c: In function ‘bpf_object__sanitize_and_load_btf’:
+libbpf.c:3537:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 3537 |         for (i = 0; i < obj->nr_programs; i++) {
+      |                       ^
+libbpf.c: In function ‘bpf_object__elf_collect’:
+libbpf.c:3945:42: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 3945 |                             targ_sec_idx >= obj->efile.sec_cnt)
+      |                                          ^~
+libbpf.c:3975:59: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+ 3975 |         if (!obj->efile.strtabidx || obj->efile.strtabidx > idx) {
+      |                                                           ^
+libbpf.c: In function ‘find_extern_sec_btf_id’:
+libbpf.c:4069:38: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 4069 |                         if (vs->type == ext_btf_id)
+      |                                      ^~
+libbpf.c: In function ‘prog_is_subprog’:
+libbpf.c:4420:30: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+ 4420 |         return prog->sec_idx == obj->efile.text_shndx;
+      |                              ^~
+libbpf.c: In function ‘bpf_program__record_reloc’:
+libbpf.c:4527:43: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 4527 |                 if (!shdr_idx || shdr_idx != obj->efile.text_shndx) {
+      |                                           ^~
+libbpf.c:4571:22: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 4571 |         if (shdr_idx == obj->efile.arena_data_shndx) {
+      |                      ^~
+libbpf.c: In function ‘init_map_in_map_slots’:
+libbpf.c:5334:23: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+ 5334 |         for (i = 0; i < map->init_slots_sz; i++) {
+      |                       ^
+libbpf.c: In function ‘init_prog_array_slots’:
+libbpf.c:5373:23: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+ 5373 |         for (i = 0; i < map->init_slots_sz; i++) {
+      |                       ^
+libbpf.c: In function ‘bpf_object_init_prog_arrays’:
+libbpf.c:5402:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 5402 |         for (i = 0; i < obj->nr_maps; i++) {
+      |                       ^
+libbpf.c: In function ‘bpf_core_find_cands’:
+libbpf.c:5778:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 5778 |         for (i = 0; i < obj->btf_module_cnt; i++) {
+      |                       ^
+libbpf.c: In function ‘bpf_core_hash_fn’:
+libbpf.c:5825:54: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+ 5825 | static size_t bpf_core_hash_fn(const long key, void *ctx)
+      |                                                ~~~~~~^~~
+libbpf.c: In function ‘bpf_core_equal_fn’:
+libbpf.c:5830:67: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+ 5830 | static bool bpf_core_equal_fn(const long k1, const long k2, void *ctx)
+      |                                                             ~~~~~~^~~
+In file included from libbpf.c:54:
+libbpf.c: In function ‘bpf_object__relocate_core’:
+libbpf_internal.h:442:16: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  442 |              i < (sec)->num_info;                                       \
+      |                ^
+libbpf.c:5958:17: note: in expansion of macro ‘for_each_btf_ext_rec’
+ 5958 |                 for_each_btf_ext_rec(seg, sec, i, rec) {
+      |                 ^~~~~~~~~~~~~~~~~~~~
+libbpf.c:5987:38: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 5987 |                         if (insn_idx >= prog->insns_cnt)
+      |                                      ^~
+In file included from libbpf.c:55:
+hashmap.h:169:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  169 |         for (bkt = 0; bkt < (map)->cap; bkt++)                              \
+      |                           ^
+libbpf.c:6023:17: note: in expansion of macro ‘hashmap__for_each_entry’
+ 6023 |                 hashmap__for_each_entry(cand_cache, entry, i) {
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~
+libbpf.c: In function ‘adjust_prog_btf_ext_info’:
+libbpf.c:6202:35: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+ 6202 |                 if (prog->sec_idx != sec_idx)
+      |                                   ^~
+libbpf_internal.h:442:16: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+  442 |              i < (sec)->num_info;                                       \
+      |                ^
+libbpf.c:6205:17: note: in expansion of macro ‘for_each_btf_ext_rec’
+ 6205 |                 for_each_btf_ext_rec(ext_info, sec, i, rec) {
+      |                 ^~~~~~~~~~~~~~~~~~~~
+libbpf.c:6186:62: warning: unused parameter ‘obj’ [-Wunused-parameter]
+ 6186 | static int adjust_prog_btf_ext_info(const struct bpf_object *obj,
+      |                                     ~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+libbpf.c: In function ‘cmp_relo_by_insn_idx’:
+libbpf.c:6331:22: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+ 6331 |         if (insn_idx == relo->insn_idx)
+      |                      ^~
+libbpf.c:6333:25: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+ 6333 |         return insn_idx < relo->insn_idx ? -1 : 1;
+      |                         ^
+libbpf.c: In function ‘bpf_object__append_subprog_code’:
+libbpf.c:6374:52: warning: unused parameter ‘obj’ [-Wunused-parameter]
+ 6374 | bpf_object__append_subprog_code(struct bpf_object *obj, struct bpf_program *main_prog,
+      |                                 ~~~~~~~~~~~~~~~~~~~^~~
+libbpf.c: In function ‘bpf_object__relocate_calls’:
+libbpf.c:6604:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 6604 |         for (i = 0; i < obj->nr_programs; i++) {
+      |                       ^
+libbpf.c: In function ‘bpf_object__free_relocs’:
+libbpf.c:6626:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 6626 |         for (i = 0; i < obj->nr_programs; i++) {
+      |                       ^
+libbpf.c: In function ‘bpf_object__sort_relos’:
+libbpf.c:6652:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 6652 |         for (i = 0; i < obj->nr_programs; i++) {
+      |                       ^
+libbpf.c: In function ‘bpf_prog_assign_exc_cb’:
+libbpf.c:6708:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 6708 |                 for (j = 0; j < obj->nr_programs; j++) {
+      |                               ^
+libbpf.c: In function ‘bpf_program_fixup_func_info’:
+libbpf.c:6947:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 6947 |         for (i = 0; i < ARRAY_SIZE(global_ctx_map); i++) {
+      |                       ^
+libbpf.c:6960:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 6960 |         for (i = 0; i < prog->func_info_cnt; i++) {
+      |                       ^
+libbpf.c:6990:43: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 6990 |                 for (rec_idx = 0; rec_idx < prog->func_info_cnt; rec_idx++) {
+      |                                           ^
+libbpf.c:6991:47: warning: comparison of integer expressions of different signedness: ‘int’ and ‘__u32’ {aka ‘unsigned int’} [-Wsign-compare]
+ 6991 |                         if (orig_ids[rec_idx] == t->type) {
+      |                                               ^~
+libbpf.c:7013:39: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 7013 |                 if (func_rec->type_id == orig_fn_id) {
+      |                                       ^~
+libbpf.c: In function ‘bpf_object__relocate’:
+libbpf.c:7088:31: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+ 7088 |                 for (j = 0; j < prog->nr_reloc; j++) {
+      |                               ^
+libbpf.c: In function ‘bpf_object__collect_map_relos’:
+libbpf.c:7217:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 7217 |                 for (j = 0; j < obj->nr_maps; j++) {
+      |                               ^
+libbpf.c:7227:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 7227 |                 if (j == obj->nr_maps) {
+      |                       ^~
+libbpf.c:7292:26: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+ 7292 |                 if (moff >= map->init_slots_sz) {
+      |                          ^~
+libbpf.c: In function ‘bpf_object__collect_relos’:
+libbpf.c:7315:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 7315 |         for (i = 0; i < obj->efile.sec_cnt; i++) {
+      |                       ^
+libbpf.c:7328:64: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 7328 |                 if (shdr->sh_type != SHT_REL || idx < 0 || idx >= obj->efile.sec_cnt) {
+      |                                                                ^~
+libbpf.c: In function ‘bpf_object__sanitize_prog’:
+libbpf.c:7369:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 7369 |         for (i = 0; i < prog->insns_cnt; i++, insn++) {
+      |                       ^
+libbpf.c: In function ‘bpf_object_load_prog’:
+libbpf.c:7595:39: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 7595 |                         for (i = 0; i < obj->nr_maps; i++) {
+      |                                       ^
+libbpf.c: In function ‘fixup_log_failed_core_relo’:
+libbpf.c:7733:47: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 7733 |                  insn_idx, spec_buf, spec_len >= sizeof(spec_buf) ? "..." : "");
+      |                                               ^~
+libbpf.c:7701:59: warning: unused parameter ‘line2’ [-Wunused-parameter]
+ 7701 |                                        char *line1, char *line2, char *line3)
+      |                                                     ~~~~~~^~~~~
+At top level:
+libbpf.c: In function ‘fixup_log_missing_map_load’:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+libbpf.c:7759:36: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 7759 |         if (map_idx < 0 || map_idx >= obj->nr_maps)
+      |                                    ^~
+libbpf.c:7740:59: warning: unused parameter ‘line2’ [-Wunused-parameter]
+ 7740 |                                        char *line1, char *line2, char *line3)
+      |                                                     ~~~~~~^~~~~
+libbpf.c: In function ‘fixup_log_missing_kfunc_call’:
+libbpf.c:7773:61: warning: unused parameter ‘line2’ [-Wunused-parameter]
+ 7773 |                                          char *line1, char *line2, char *line3)
+      |                                                       ~~~~~~^~~~~
+libbpf.c: In function ‘fixup_verifier_log’:
+libbpf.c:7818:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 7818 |         for (i = 0; i < max_last_line_cnt; i++, next_line = cur_line) {
+      |                       ^
+libbpf.c: In function ‘bpf_object_init_progs’:
+libbpf.c:7938:93: warning: unused parameter ‘opts’ [-Wunused-parameter]
+ 7938 | static int bpf_object_init_progs(struct bpf_object *obj, const struct bpf_object_open_opts *opts)
+      |                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+libbpf.c: In function ‘find_ksym_btf_id’:
+libbpf.c:8230:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 8230 |                 for (i = 0; i < obj->btf_module_cnt; i++) {
+      |                               ^
+libbpf.c: In function ‘bpf_object_prepare_struct_ops’:
+libbpf.c:8537:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 8537 |         for (i = 0; i < obj->nr_maps; i++) {
+      |                       ^
+libbpf.c: In function ‘bpf_object_load’:
+libbpf.c:8600:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 8600 |         for (i = 0; i < obj->btf_module_cnt; i++) {
+      |                       ^
+libbpf.c:8619:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 8619 |         for (i = 0; i < obj->nr_maps; i++)
+      |                       ^
+libbpf.c: In function ‘bpf_object__close’:
+libbpf.c:9097:23: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+ 9097 |         for (i = 0; i < obj->nr_extern; i++)
+      |                       ^
+libbpf.c: In function ‘bpf_object__gen_loader’:
+libbpf.c:9165:28: warning: ‘calloc’ sizes specified with ‘sizeof’ in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
+ 9165 |         gen = calloc(sizeof(*gen), 1);
+      |                            ^
+libbpf.c:9165:28: note: earlier argument should specify number of elements, later size of each element
+libbpf.c: In function ‘__bpf_program__iter’:
+libbpf.c:9195:17: warning: comparison of integer expressions of different signedness: ‘ssize_t’ {aka ‘long int’} and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 9195 |         if (idx >= obj->nr_programs || idx < 0)
+      |                 ^~
+libbpf.c: In function ‘libbpf_unregister_prog_handler’:
+libbpf.c:9597:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 9597 |         for (i = 0; i < custom_sec_def_cnt; i++) {
+      |                       ^
+libbpf.c:9602:15: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 9602 |         if (i == custom_sec_def_cnt)
+      |               ^~
+libbpf.c:9606:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 9606 |         for (i = i + 1; i < custom_sec_def_cnt; i++)
+      |                           ^
+libbpf.c: In function ‘libbpf_get_type_names’:
+libbpf.c:9688:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 9688 |         for (i = 0; i < ARRAY_SIZE(section_defs); i++) {
+      |                       ^
+libbpf.c:9699:67: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+ 9699 |                 if (strlen(buf) + strlen(section_defs[i].sec) + 2 > len) {
+      |                                                                   ^
+libbpf.c: In function ‘find_btf_by_prefix_kind’:
+libbpf.c:9938:28: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 9938 |         if (ret < 0 || ret >= sizeof(btf_type_name))
+      |                            ^~
+libbpf.c: In function ‘find_kernel_btf_id’:
+libbpf.c:10041:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+10041 |         for (i = 0; i < obj->btf_module_cnt; i++) {
+      |                       ^
+libbpf.c: In function ‘__bpf_map__iter’:
+libbpf.c:10451:17: warning: comparison of integer expressions of different signedness: ‘ssize_t’ {aka ‘long int’} and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+10451 |         if (idx >= obj->nr_maps || idx < 0)
+      |                 ^~
+libbpf.c: In function ‘append_to_file’:
+libbpf.c:11023:24: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+11023 |         if (n < 0 || n >= sizeof(buf))
+      |                        ^~
+libbpf.c: In function ‘probe_kern_syscall_wrapper’:
+libbpf.c:11192:36: warning: unused parameter ‘token_fd’ [-Wunused-parameter]
+11192 | int probe_kern_syscall_wrapper(int token_fd)
+      |                                ~~~~^~~~~~~~
+libbpf.c: In function ‘avail_kallsyms_cb’:
+libbpf.c:11403:64: warning: unused parameter ‘sym_type’ [-Wunused-parameter]
+11403 | static int avail_kallsyms_cb(unsigned long long sym_addr, char sym_type,
+      |                                                           ~~~~~^~~~~~~~
+libbpf.c: In function ‘libbpf_available_kallsyms_parse’:
+libbpf.c:11485:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+11485 |         for (i = 0; i < cnt; i++)
+      |                       ^
+libbpf.c: In function ‘attach_kprobe’:
+libbpf.c:11636:63: warning: unused parameter ‘cookie’ [-Wunused-parameter]
+11636 | static int attach_kprobe(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+      |                                                          ~~~~~^~~~~~
+libbpf.c: In function ‘attach_ksyscall’:
+libbpf.c:11673:65: warning: unused parameter ‘cookie’ [-Wunused-parameter]
+11673 | static int attach_ksyscall(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+      |                                                            ~~~~~^~~~~~
+libbpf.c: In function ‘attach_kprobe_multi’:
+libbpf.c:11694:69: warning: unused parameter ‘cookie’ [-Wunused-parameter]
+11694 | static int attach_kprobe_multi(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+      |                                                                ~~~~~^~~~~~
+libbpf.c: In function ‘attach_kprobe_session’:
+libbpf.c:11725:71: warning: unused parameter ‘cookie’ [-Wunused-parameter]
+11725 | static int attach_kprobe_session(const struct bpf_program *prog, long cookie,
+      |                                                                  ~~~~~^~~~~~
+libbpf.c: In function ‘attach_uprobe_multi’:
+libbpf.c:11751:69: warning: unused parameter ‘cookie’ [-Wunused-parameter]
+11751 | static int attach_uprobe_multi(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+      |                                                                ~~~~~^~~~~~
+libbpf.c: In function ‘resolve_full_path’:
+libbpf.c:11980:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+11980 |         for (i = 0; i < ARRAY_SIZE(search_paths); i++) {
+      |                       ^
+libbpf.c:11992:47: warning: operand of ‘?:’ changes signedness from ‘long int’ to ‘size_t’ {aka ‘long unsigned int’} due to unsignedness of other operand [-Wsign-compare]
+11992 |                         seg_len = next_path ? next_path - s : strlen(s);
+      |                                               ^~~~~~~~~~~~~
+libbpf.c: In function ‘attach_uprobe’:
+libbpf.c:12272:63: warning: unused parameter ‘cookie’ [-Wunused-parameter]
+12272 | static int attach_uprobe(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+      |                                                          ~~~~~^~~~~~
+libbpf.c: In function ‘attach_usdt’:
+libbpf.c:12390:61: warning: unused parameter ‘cookie’ [-Wunused-parameter]
+12390 | static int attach_usdt(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+      |                                                        ~~~~~^~~~~~
+libbpf.c: In function ‘determine_tracepoint_id’:
+libbpf.c:12429:17: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+12429 |         if (ret >= sizeof(file)) {
+      |                 ^~
+libbpf.c: In function ‘attach_tp’:
+libbpf.c:12511:59: warning: unused parameter ‘cookie’ [-Wunused-parameter]
+12511 | static int attach_tp(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+      |                                                      ~~~~~^~~~~~
+libbpf.c: In function ‘attach_raw_tp’:
+libbpf.c:12587:63: warning: unused parameter ‘cookie’ [-Wunused-parameter]
+12587 | static int attach_raw_tp(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+      |                                                          ~~~~~^~~~~~
+libbpf.c: In function ‘attach_trace’:
+libbpf.c:12681:62: warning: unused parameter ‘cookie’ [-Wunused-parameter]
+12681 | static int attach_trace(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+      |                                                         ~~~~~^~~~~~
+libbpf.c: In function ‘attach_lsm’:
+libbpf.c:12687:60: warning: unused parameter ‘cookie’ [-Wunused-parameter]
+12687 | static int attach_lsm(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+      |                                                       ~~~~~^~~~~~
+libbpf.c: In function ‘attach_iter’:
+libbpf.c:12898:61: warning: unused parameter ‘cookie’ [-Wunused-parameter]
+12898 | static int attach_iter(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+      |                                                        ~~~~~^~~~~~
+libbpf.c: In function ‘__perf_buffer__new’:
+libbpf.c:13398:56: warning: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+13398 |                 if (map.max_entries && map.max_entries < pb->cpu_cnt)
+      |                                                        ^
+libbpf.c: In function ‘perf_buffer__buffer_fd’:
+libbpf.c:13578:21: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+13578 |         if (buf_idx >= pb->cpu_cnt)
+      |                     ^~
+libbpf.c: In function ‘perf_buffer__consume_buffer’:
+libbpf.c:13616:21: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+13616 |         if (buf_idx >= pb->cpu_cnt)
+      |                     ^~
+libbpf.c: In function ‘parse_cpu_mask_file’:
+libbpf.c:13759:17: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+13759 |         if (len >= sizeof(buf)) {
+      |                 ^~
+libbpf.c: In function ‘populate_skeleton_maps’:
+libbpf.c:13800:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+13800 |         for (i = 0; i < map_cnt; i++) {
+      |                       ^
+libbpf.c: In function ‘populate_skeleton_progs’:
+libbpf.c:13825:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+13825 |         for (i = 0; i < prog_cnt; i++) {
+      |                       ^
+libbpf.c: In function ‘bpf_object__attach_skeleton’:
+libbpf.c:14014:36: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+14014 |                 if (s->map_skel_sz < offsetofend(struct bpf_map_skeleton, link)) {
+      |                                    ^
+libbpf.c: In function ‘bpf_object__detach_skeleton’:
+libbpf.c:14053:28: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+14053 |         if (s->map_skel_sz < sizeof(struct bpf_map_skeleton))
+      |                            ^
+At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics

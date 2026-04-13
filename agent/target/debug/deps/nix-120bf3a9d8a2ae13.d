@@ -1,0 +1,13 @@
+/home/ubuntu/workspace/ebpf-accel/chain-scope-internal/agent/target/debug/deps/nix-120bf3a9d8a2ae13.d: /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/lib.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/macros.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/errno.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/fcntl.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/sys/mod.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/sys/signal.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/sys/sysinfo.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/sys/time.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/unistd.rs
+
+/home/ubuntu/workspace/ebpf-accel/chain-scope-internal/agent/target/debug/deps/libnix-120bf3a9d8a2ae13.rmeta: /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/lib.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/macros.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/errno.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/fcntl.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/sys/mod.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/sys/signal.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/sys/sysinfo.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/sys/time.rs /home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/unistd.rs
+
+/home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/lib.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/macros.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/errno.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/fcntl.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/sys/mod.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/sys/signal.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/sys/sysinfo.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/sys/time.rs:
+/home/ubuntu/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.27.1/src/unistd.rs:

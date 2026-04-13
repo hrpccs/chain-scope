@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: jaeger
+ namespace: odigos-system
+ labels:
+   app: jaeger
+   name: jaeger
+spec:
+ replicas: 1
+ selector:
+   matchLabels:
+     app: jaeger
+ template:
+   metadata:
+     labels:
+       app: jaeger
+       name: jaeger
+   spec:
+     containers:
+       - name: jaeger
+         image: jaegertracing/all-in-one:1.54.0
+         ports:
+           - containerPort: 16686 # UI
+           - containerPort: 4317  # OTLP gRPC
+           - containerPort: 4318  # OTLP gRPC
+           - containerPort: 14250 # gRPC
+         args:
+           - "--log-level=debug"
+           - "--collector.otlp.enabled=true"
+           - "--collector.otlp.grpc.host-port=0.0.0.0:4317"
+           - "--collector.otlp.http.host-port=0.0.0.0:4318"
+     affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: benchmark
+                    operator: In
+                    values:
+                      - controller
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger
+  namespace: odigos-system
+spec:
+  selector:
+    app: jaeger
+  ports:
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+    - name: ui
+      port: 16686
+      targetPort: 16686
+    - name: grpc
+      port: 14250
+      targetPort: 14250
+  type: ClusterIP
+
+---
+apiVersion: odigos.io/v1alpha1
+kind: Destination
+metadata:
+  name: jaeger-example
+  namespace: odigos-system
+spec:
+  data:
+    JAEGER_URL: jaeger:4317
+    # Note: The commented fields below are optional.
+    # JAEGER_TLS_ENABLED: <Enable TLS>
+    # JAEGER_CA_PEM: <Certificate Authority>
+  destinationName: jaeger
+  signals:
+  - TRACES
+  type: jaeger

@@ -1,0 +1,33 @@
+[package]
+name = "chain_scope"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+kube = { version = "0.75", features = ["derive"] }
+k8s-openapi = { version = "0.16", features = ["v1_25"] }
+anyhow = "1.0"
+libbpf-rs = "0.25.0"
+libbpf-sys = "1.5.1"
+libc = "*"
+lazy_static = "1.4"
+warp = "0.3.7"
+tokio = { version = "1.44.2", features = ["full"] }
+plain = "*"
+serde = { version = "1.0", features = ["derive"] }
+containerd-client = "*"
+opentelemetry = { version = "0.30.0"}
+opentelemetry-otlp = { version = "0.30.0", features = ["grpc-tonic","internal-logs", "http-json"] }
+opentelemetry_sdk = { version = "0.30.0", features = ["rt-tokio"] }
+crossbeam = "*"
+pnet = "*"
+regex = "*"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+opentelemetry-appender-tracing = "0.30.0"
+serde_json = "*"
+
+[build-dependencies] 
+libbpf-cargo = "0.25.0"

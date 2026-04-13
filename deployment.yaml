@@ -1,0 +1,318 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: chain-scope-agent
+  namespace: chain-scope
+  labels:
+    app: chain-scope-agent
+spec:
+  selector:
+    matchLabels:
+      name: chain-scope-agent
+  template:
+    metadata:
+      labels:
+        name: chain-scope-agent
+    spec:
+      hostAliases:
+        - ip: "10.43.0.1"
+          hostnames:
+            - "kubernetes.default.svc"
+      terminationGracePeriodSeconds: 60
+      initContainers:
+        # - name: init-if
+        #   image: nicolaka/netshoot:latest
+        #   imagePullPolicy: IfNotPresent
+        #   command: [ "/bin/sh", "-c" ]
+        #   args:
+        #     - |
+        #       if ip link show dev "$NIC_NAME" >/dev/null 2>&1; then
+        #         echo "Configuring network interfaces..."
+
+        #         # Cleanup existing interfaces if they exist
+        #         ip link delete veth-gso 2>/dev/null || true
+        #         tc qdisc del dev "$NIC_NAME" clsact 2>/dev/null || true
+        #         tc qdisc del dev veth-return clsact 2>/dev/null || true
+
+        #         # Create new veth pair
+        #         ip link add veth-gso type veth peer name veth-return
+        #         ip link set veth-gso up
+        #         ip link set veth-return up
+
+        #         # Configure tc qdiscs
+        #         tc qdisc add dev "$NIC_NAME" clsact
+        #         tc qdisc add dev veth-return clsact
+
+        #         # Disable offloading features
+        #         ethtool -K veth-gso gso off tso off
+        #         ethtool -K veth-return gro off
+
+        #         echo "Network configuration completed"
+        #       else
+        #         echo "WARNING: interface $NIC_NAME not found, skipping configuration"
+        #       fi
+        #       true
+        #   env:
+        #     - name: NIC_NAME
+        #       value: "ens3"
+        #   securityContext:
+        #     privileged: true
+        - name: wait-controller
+          image: alpine:3.14
+          imagePullPolicy: IfNotPresent
+          command: [ 'sh', '-c', 'until [ -n CONTROLLER_PORT_4317_TCP_ADDR ]; do echo waiting for controller; sleep 5; done;' ]
+          env:
+            - name: CONTROLLER_SERVICE_HOST
+              value: "controller"
+            - name: CONTROLLER_SERVICE_PORT
+              value: "4317"
+      containers:
+        - name: chain-scope-agent
+          image: chainscope1234/agent:dev
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - |
+                    tc qdisc show | grep clsact | while read -r line; do
+                      dev=$(echo "$line" | grep -o 'dev [^ ]*' | cut -d' ' -f2)
+                      echo "Removing clsact from $dev"
+                      tc qdisc del dev "$dev" clsact
+                    done
+                    ip link delete veth-gso
+          ports:
+            - containerPort: 9898
+              name: metrics
+          readinessProbe:
+            tcpSocket:
+              port: 9898
+            initialDelaySeconds: 15
+            periodSeconds: 2
+            failureThreshold: 10
+          imagePullPolicy: Always
+          resources:
+            requests:
+              ephemeral-storage: "2Gi"
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            - name: SERVING_NAMESPACES
+              value: "nginx-test,hotel-test,bookinfo-test"
+            - name: RUST_BACKTRACE
+              value: "1"
+            - name: DEBUG
+              value: "True"
+            - name: RUST_LOG
+              value: debug
+            - name: SAMPLING_INTERVAL
+              value: "1"
+            - name: KUBE_POLL_INTERVAL
+              value: "30000"
+            - name: NIC_NAME
+              value: "ens3"
+            - name: EVENT_WITH_LOG
+              value: "True"
+            - name: GRPC_BEYLA_INJECTION
+              value: "False"
+            - name: GOROUTINES_INKERNEL_SUPPORT
+              value: "True"
+            - name: TEST_GOROUTINE
+              value: "False"
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+          volumeMounts:
+            - name: containerd-sock
+              mountPath: /run/k3s/containerd/containerd.sock
+              readOnly: false
+            - name: modules-host
+              mountPath: /lib/modules
+              readOnly: false
+            - name: src-host
+              mountPath: /usr/src
+              readOnly: false
+            - name: tracing-host
+              mountPath: /sys/kernel/tracing
+              readOnly: false
+            - name: cgroup-host
+              mountPath: /sys/fs/cgroup
+              readOnly: true
+            - name: bpf-host
+              mountPath: /sys/fs/bpf
+              readOnly: false
+      hostNetwork: true
+      hostPID: true
+      serviceAccountName: chain-scope
+      volumes:
+        - name: modules-host
+          hostPath:
+            path: /lib/modules
+        - name: src-host
+          hostPath:
+            path: /usr/src
+        - name: tracing-host
+          hostPath:
+            path: /sys/kernel/tracing
+        - name: cgroup-host
+          hostPath:
+            path: /sys/fs/cgroup
+        - name: bpf-host
+          hostPath:
+            path: /sys/fs/bpf
+        - name: containerd-sock
+          hostPath: 
+            path: /run/k3s/containerd/containerd.sock
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: chain-scope
+rules:
+  - apiGroups: [""]
+    resources:
+      - services
+      - pods
+      - nodes
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: chain-scope
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: chain-scope
+subjects:
+  - kind: ServiceAccount
+    name: chain-scope
+    namespace: chain-scope
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: chain-scope
+  namespace: chain-scope
+---
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: jaeger
+#  namespace: chain-scope
+#  labels:
+#    app: jaeger
+#    name: jaeger
+#spec:
+#  replicas: 1
+#  selector:
+#    matchLabels:
+#      app: jaeger
+#  template:
+#    metadata:
+#      labels:
+#        app: jaeger
+#        name: jaeger
+#    spec:
+#      nodeSelector:
+#          node-type: collector
+#      containers:
+#        - name: jaeger
+#          image: jaegertracing/all-in-one:1.54.0
+#          ports:
+#            - containerPort: 16686 # UI
+#            - containerPort: 4317  # OTLP gRPC
+#            - containerPort: 14250 # gRPC
+#          args:
+#            - "--log-level=debug"
+#            - "--collector.otlp.enabled=true"
+#            - "--collector.otlp.grpc.host-port=0.0.0.0:4317"
+#            - "--collector.otlp.http.host-port=0.0.0.0:4318"
+#---
+apiVersion: v1
+kind: Service
+metadata:
+  name: controller
+  namespace: chain-scope
+spec:
+  selector:
+    app: chain-scope-controller
+  ports:
+    # - name: ui
+    #   port: 16686
+    #   targetPort: 16686
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
+    # - name: grpc
+    #   port: 14250
+    #   targetPort: 14250
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: chain-scope-controller
+  namespace: chain-scope
+  labels:
+    name: chain-scope-controller
+    app: chain-scope-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: chain-scope-controller
+      app: chain-scope-controller
+  template:
+    metadata:
+      labels:
+        name: chain-scope-controller
+        app: chain-scope-controller
+    spec:
+      containers:
+        - name: chain-scope-controller
+          image: chainscope1234/controller:dev
+          imagePullPolicy: Always
+          resources:
+            requests:
+              ephemeral-storage: "2Gi"
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: DEBUG
+              value: "False"
+            - name: IDLE
+              value: "False"
+            - name: CHAIN_INTERVAL
+              value: "5"
+            - name: COLLECT_INTERVAL
+              value: "5"
+            - name: ALGORITHM
+              value: "tag-based"
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: benchmark
+                    operator: In
+                    values:
+                      - controller
